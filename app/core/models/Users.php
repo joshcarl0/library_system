@@ -327,6 +327,29 @@ class Users
     }
 
     // ════════════════════════════════════════════════════════
+    //  PASSWORD MANAGEMENT
+    // ════════════════════════════════════════════════════════
+
+    /**
+     * Update a user's password.
+     */
+    public function updatePassword(int $userId, string $newPassword): bool
+    {
+        $hashedPassword = password_hash($newPassword, PASSWORD_BCRYPT);
+        
+        try {
+            $this->db->execute(
+                "UPDATE users SET password = :password WHERE id = :id",
+                ['password' => $hashedPassword, 'id' => $userId]
+            );
+            return true;
+        } catch (\PDOException $e) {
+            error_log('Failed to update password: ' . $e->getMessage());
+            return false;
+        }
+    }
+
+    // ════════════════════════════════════════════════════════
     //  FINDERS
     // ════════════════════════════════════════════════════════
 

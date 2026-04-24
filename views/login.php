@@ -265,6 +265,14 @@
         </div>
         <?php endif; ?>
 
+        <!-- Success message from password reset -->
+        <?php if (isset($_GET['reset']) && $_GET['reset'] === 'success'): ?>
+        <div class="alert-glass" style="background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.2); color: #6ee7b7;">
+            <i class="bi bi-check-circle-fill"></i>
+            Password has been reset successfully. You can now log in.
+        </div>
+        <?php endif; ?>
+
         <!-- Login Form -->
         <form id="loginForm" method="POST" action="/library_system/index.php?action=login" novalidate>
 
@@ -289,6 +297,7 @@
             <!-- Password -->
             <div class="mb-2">
                 <label for="password" class="form-label">Password</label>
+
                 <div class="input-group">
                     <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
                     <input
@@ -307,7 +316,7 @@
             </div>
 
             <!-- Forgot password -->
-            <div class="text-end mb-4">
+            <div class="mb-4 text-end">
                 <a href="/library_system/index.php?action=forgot_password" class="forgot-link">Forgot password?</a>
             </div>
 
