@@ -84,6 +84,22 @@ switch ($action) {
         $adminController->manageCategories();
         break;
 
+    case 'admin_manage_users':
+        $adminController->manageUsers();
+        break;
+
+    case 'admin_faculty_accounts':
+        $adminController->facultyAccounts();
+        break;
+
+    case 'admin_usage_reports':
+        $adminController->usageReports();
+        break;
+
+    case 'admin_export_data':
+        $adminController->exportData();
+        break;
+
     // ════════════════════════════════════════════════════════
     //  STUDENT ROUTES  (role: student)
     // ════════════════════════════════════════════════════════

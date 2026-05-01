@@ -59,8 +59,14 @@
             </h3>
             <form action="/library_system/index.php?action=admin_manage_categories" method="POST" class="row g-3">
                 <input type="hidden" name="form_action" value="add">
-                <div class="col-md-9">
-                    <input type="text" name="category_name" class="modal-input" placeholder="Enter category name (e.g. Engineering, Nursing, Research)" required>
+                <div class="col-md-6">
+                    <input type="text" name="name" class="modal-input" placeholder="Enter category name..." required>
+                </div>
+                <div class="col-md-3">
+                    <select name="resource_type" class="modal-input" style="appearance: auto;">
+                        <option value="Digital">Digital</option>
+                        <option value="Physical">Physical</option>
+                    </select>
                 </div>
                 <div class="col-md-3">
                     <button type="submit" class="btn-oc-primary w-100 h-100">Add Category</button>
@@ -82,13 +88,16 @@
                     <div class="category-icon">
                         <i class="bi bi-tag-fill"></i>
                     </div>
-                    <div class="category-name"><?= htmlspecialchars($cat['category'] ?? '', ENT_QUOTES, 'UTF-8') ?></div>
+                    <div>
+                        <div class="category-name"><?= htmlspecialchars($cat['category_name'] ?? '', ENT_QUOTES, 'UTF-8') ?></div>
+                        <small class="text-muted"><?= htmlspecialchars($cat['resource_type'] ?? '', ENT_QUOTES, 'UTF-8') ?></small>
+                    </div>
                 </div>
                 <div class="category-actions">
-                    <button class="action-btn edit" onclick="openEditModal(<?= $cat['id'] ?>, '<?= addslashes($cat['category'] ?? '') ?>')">
+                    <button class="action-btn edit" onclick="openEditModal(<?= $cat['id'] ?>, '<?= addslashes($cat['category_name'] ?? '') ?>', '<?= $cat['resource_type'] ?>')">
                         <i class="bi bi-pencil-fill"></i>
                     </button>
-                    <button class="action-btn delete" onclick="openDeleteModal(<?= $cat['id'] ?>, '<?= addslashes($cat['category'] ?? '') ?>')">
+                    <button class="action-btn delete" onclick="openDeleteModal(<?= $cat['id'] ?>, '<?= addslashes($cat['category_name'] ?? '') ?>')">
                         <i class="bi bi-trash-fill"></i>
                     </button>
                 </div>
@@ -112,8 +121,17 @@
                 <div class="modal-body p-4">
                     <input type="hidden" name="form_action" value="edit">
                     <input type="hidden" name="category_id" id="edit_cat_id">
-                    <label class="modal-label">Category Name</label>
-                    <input type="text" name="category_name" id="edit_cat_name" class="modal-input" required>
+                    <div class="mb-3">
+                        <label class="modal-label">Category Name</label>
+                        <input type="text" name="name" id="edit_cat_name" class="modal-input" required>
+                    </div>
+                    <div>
+                        <label class="modal-label">Resource Type</label>
+                        <select name="resource_type" id="edit_cat_type" class="modal-input" style="appearance: auto;">
+                            <option value="Digital">Digital</option>
+                            <option value="Physical">Physical</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="modal-footer modal-footer-oc">
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -156,9 +174,10 @@
         document.getElementById('sidebarOverlay').classList.toggle('show');
     }
 
-    function openEditModal(id, name) {
+    function openEditModal(id, name, type) {
         document.getElementById('edit_cat_id').value = id;
         document.getElementById('edit_cat_name').value = name;
+        document.getElementById('edit_cat_type').value = type;
         new bootstrap.Modal(document.getElementById('editCategoryModal')).show();
     }
 

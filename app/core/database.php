@@ -12,7 +12,7 @@
 class Database
 {
     // ── Connection credentials ──────────────────────────────
-    private const HOST     = 'localhost';
+    private const HOST     = '127.0.0.1';
     private const DB_NAME  = 'lris_db';
     private const USERNAME = 'root';
     private const PASSWORD = '';

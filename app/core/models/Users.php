@@ -400,6 +400,27 @@ class Users
     }
 
     /**
+     * Count total users.
+     */
+    public function countAll(): int
+    {
+        $row = $this->db->fetchOne("SELECT COUNT(*) AS total FROM users");
+        return (int) ($row['total'] ?? 0);
+    }
+
+    /**
+     * Count users by role.
+     */
+    public function countByRole(string $role): int
+    {
+        $row = $this->db->fetchOne(
+            "SELECT COUNT(*) AS total FROM users WHERE role = :role",
+            ['role' => $role]
+        );
+        return (int) ($row['total'] ?? 0);
+    }
+
+    /**
      * Get all users, with optional search and role filter.
      */
     public function getAllUsers(string $search = '', string $role = ''): array
@@ -422,6 +443,31 @@ class Users
         $sql .= " ORDER BY created_at DESC";
 
         return $this->db->fetchAll($sql, $params);
+    }
+
+    /**
+     * Update user details (admin use).
+     */
+    public function updateUser(int $id, array $data): array
+    {
+        $fullname  = trim($data['fullname'] ?? '');
+        $email     = trim($data['email'] ?? '');
+        $role      = in_array($data['role'] ?? '', ['student', 'faculty', 'admin']) ? $data['role'] : 'student';
+
+        if (empty($fullname) || empty($email)) {
+            return ['success' => false, 'message' => 'Full name and email are required.'];
+        }
+
+        try {
+            $this->db->execute(
+                "UPDATE users SET fullname = :fullname, email = :email, role = :role WHERE id = :id",
+                ['fullname' => $fullname, 'email' => $email, 'role' => $role, 'id' => $id]
+            );
+            return ['success' => true, 'message' => 'User updated successfully.'];
+        } catch (\PDOException $e) {
+            error_log('User update failed: ' . $e->getMessage());
+            return ['success' => false, 'message' => 'Failed to update user.'];
+        }
     }
 
     /**

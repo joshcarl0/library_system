@@ -13,29 +13,45 @@ class Category
 
     public function getAll(): array
     {
-        return $this->db->fetchAll("SELECT * FROM categories ORDER BY category ASC");
+        return $this->db->fetchAll("SELECT * FROM categories ORDER BY category_name ASC");
     }
 
-    public function create(string $name): array
+    public function countAll(): int
     {
-        $name = trim($name);
+        $row = $this->db->fetchOne("SELECT COUNT(*) AS total FROM categories");
+        return (int) ($row['total'] ?? 0);
+    }
+
+    public function create(array $data): array
+    {
+        $name = trim($data['name'] ?? '');
+        $type = $data['resource_type'] ?? 'Digital';
+
         if (empty($name)) return ['success' => false, 'message' => 'Category name is required.'];
 
         try {
-            $this->db->execute("INSERT INTO categories (category) VALUES (:category)", ['category' => $name]);
+            $this->db->execute(
+                "INSERT INTO categories (category_name, resource_type) VALUES (:name, :type)",
+                ['name' => $name, 'type' => $type]
+            );
             return ['success' => true, 'message' => 'Category added successfully.'];
         } catch (\PDOException $e) {
             return ['success' => false, 'message' => 'Error: ' . $e->getMessage()];
         }
     }
 
-    public function update(int $id, string $name): array
+    public function update(int $id, array $data): array
     {
-        $name = trim($name);
+        $name = trim($data['name'] ?? '');
+        $type = $data['resource_type'] ?? 'Digital';
+
         if (empty($name)) return ['success' => false, 'message' => 'Category name is required.'];
 
         try {
-            $this->db->execute("UPDATE categories SET category = :category WHERE id = :id", ['category' => $name, 'id' => $id]);
+            $this->db->execute(
+                "UPDATE categories SET category_name = :name, resource_type = :type WHERE id = :id",
+                ['name' => $name, 'type' => $type, 'id' => $id]
+            );
             return ['success' => true, 'message' => 'Category updated successfully.'];
         } catch (\PDOException $e) {
             return ['success' => false, 'message' => 'Error: ' . $e->getMessage()];

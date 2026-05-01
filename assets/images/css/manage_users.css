@@ -1,0 +1,68 @@
+/* ══════════════════════════════════════════
+   Olivarez College LRIS — Manage Users CSS
+   File: assets/images/css/manage_users.css
+   ══════════════════════════════════════════ */
+
+.user-badge {
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    display: inline-block;
+}
+
+.badge-student {
+    background: #e0f2fe;
+    color: #0369a1;
+}
+
+.badge-faculty {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.badge-admin {
+    background: #fef2f2;
+    color: #991b1b;
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    background: #f1f5f9;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #64748b;
+    font-weight: 600;
+    font-size: 1rem;
+    margin-right: 12px;
+}
+
+.user-name-cell {
+    display: flex;
+    align-items: center;
+}
+
+.user-fullname {
+    font-weight: 700;
+    color: #1e293b;
+    display: block;
+}
+
+.user-email {
+    font-size: 0.8rem;
+    color: #64748b;
+    display: block;
+}
+
+.id-badge {
+    background: #f1f5f9;
+    color: #475569;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-family: monospace;
+    font-size: 0.85rem;
+}

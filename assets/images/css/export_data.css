@@ -1,0 +1,87 @@
+/* ══════════════════════════════════════════
+   Olivarez College LRIS — Export Data CSS
+   File: assets/images/css/export_data.css
+   ══════════════════════════════════════════ */
+
+.export-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
+    margin-top: 20px;
+}
+
+.export-card {
+    background: #fff;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 4px 25px rgba(0,0,0,0.05);
+    text-align: center;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.export-card:hover {
+    transform: translateY(-10px);
+    border-color: var(--oc-gold);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+}
+
+.export-icon {
+    width: 80px;
+    height: 80px;
+    background: #f8fafc;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    font-size: 2.2rem;
+    color: var(--oc-green);
+    border: 2px solid #f1f5f9;
+}
+
+.export-card h3 {
+    font-size: 1.3rem;
+    font-weight: 800;
+    margin-bottom: 10px;
+    color: #1e293b;
+}
+
+.export-card p {
+    color: #64748b;
+    font-size: 0.9rem;
+    margin-bottom: 25px;
+    line-height: 1.5;
+}
+
+.btn-export {
+    background-color: var(--oc-gold);
+    color: var(--oc-green);
+    border: none;
+    padding: 12px 30px;
+    border-radius: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    width: 100%;
+    transition: all 0.3s;
+}
+
+.btn-export:hover {
+    background-color: var(--oc-green);
+    color: #fff;
+    box-shadow: 0 5px 15px rgba(212, 175, 55, 0.4);
+}
+
+.export-info-box {
+    background: #eff6ff;
+    border-left: 4px solid #3b82f6;
+    padding: 15px 20px;
+    border-radius: 8px;
+    margin-bottom: 30px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    color: #1e40af;
+    font-size: 0.9rem;
+}

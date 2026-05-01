@@ -134,15 +134,14 @@ class AdminController
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $action = $_POST['form_action'] ?? '';
-            $name   = $_POST['category_name'] ?? '';
             $id     = (int) ($_POST['category_id'] ?? 0);
 
             if ($action === 'add') {
-                $result = $this->categoryModel->create($name);
+                $result = $this->categoryModel->create($_POST);
                 $message = $result['message'];
                 $msgType = $result['success'] ? 'success' : 'error';
             } elseif ($action === 'edit') {
-                $result = $this->categoryModel->update($id, $name);
+                $result = $this->categoryModel->update($id, $_POST);
                 $message = $result['message'];
                 $msgType = $result['success'] ? 'success' : 'error';
             } elseif ($action === 'delete') {
@@ -154,5 +153,162 @@ class AdminController
 
         $categories = $this->categoryModel->getAll();
         require_once __DIR__ . '/../../../views/admin/categories.php';
+    }
+
+    // ════════════════════════════════════════════════════════
+    //  MANAGE USERS
+    // ════════════════════════════════════════════════════════
+
+    public function manageUsers(): void
+    {
+        Users::requireRole('admin', '/library_system/index.php?action=login');
+
+        $message = '';
+        $msgType = '';
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $action = $_POST['form_action'] ?? '';
+            $userId = (int) ($_POST['user_id'] ?? 0);
+
+            if ($action === 'edit') {
+                $result = $this->userModel->updateUser($userId, $_POST);
+                $message = $result['message'];
+                $msgType = $result['success'] ? 'success' : 'error';
+            } elseif ($action === 'delete') {
+                $result = $this->userModel->deleteUser($userId);
+                $message = $result['message'];
+                $msgType = $result['success'] ? 'success' : 'error';
+            }
+        }
+
+        $search = $_GET['search'] ?? '';
+        $role   = $_GET['role'] ?? '';
+        $users  = $this->userModel->getAllUsers($search, $role);
+
+        require_once __DIR__ . '/../../../views/admin/manage_users.php';
+    }
+
+    // ════════════════════════════════════════════════════════
+    //  FACULTY ACCOUNTS
+    // ════════════════════════════════════════════════════════
+
+    public function facultyAccounts(): void
+    {
+        Users::requireRole('admin', '/library_system/index.php?action=login');
+
+        $message = '';
+        $msgType = '';
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $action = $_POST['form_action'] ?? '';
+            $userId = (int) ($_POST['user_id'] ?? 0);
+
+            if ($action === 'edit') {
+                $result = $this->userModel->updateUser($userId, $_POST);
+                $message = $result['message'];
+                $msgType = $result['success'] ? 'success' : 'error';
+            } elseif ($action === 'delete') {
+                $result = $this->userModel->deleteUser($userId);
+                $message = $result['message'];
+                $msgType = $result['success'] ? 'success' : 'error';
+            }
+        }
+
+        $search = $_GET['search'] ?? '';
+        $users  = $this->userModel->getAllUsers($search, 'faculty');
+
+        require_once __DIR__ . '/../../../views/admin/faculty_accounts.php';
+    }
+
+    // ════════════════════════════════════════════════════════
+    //  USAGE REPORTS
+    // ════════════════════════════════════════════════════════
+
+    public function usageReports(): void
+    {
+        Users::requireRole('admin', '/library_system/index.php?action=login');
+
+        // Resources Stats
+        $stats = [
+            'total_resources'     => $this->resourceModel->countAll(),
+            'available_resources' => $this->resourceModel->countByStatus('available'),
+            'borrowed_resources'  => $this->resourceModel->countByStatus('borrowed'),
+            'total_users'         => $this->userModel->countAll(),
+            'total_students'      => $this->userModel->countByRole('student'),
+            'total_faculty'       => $this->userModel->countByRole('faculty'),
+            'total_categories'    => $this->categoryModel->countAll(),
+        ];
+
+        // Get some activity or details
+        $recentResources = $this->resourceModel->getAll('', '', '', ''); // All, default limit? 
+        // We can slice it in the view
+        
+        require_once __DIR__ . '/../../../views/admin/usage_reports.php';
+    }
+
+    // ════════════════════════════════════════════════════════
+    //  EXPORT DATA
+    // ════════════════════════════════════════════════════════
+
+    public function exportData(): void
+    {
+        Users::requireRole('admin', '/library_system/index.php?action=login');
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $type = $_POST['export_type'] ?? '';
+
+            if ($type === 'resources') {
+                $data = $this->resourceModel->getAll();
+                $filename = "lris_resources_" . date('Y-m-d') . ".csv";
+                $header = ['ID', 'Title', 'Author', 'Category', 'Subject', 'Type', 'Status', 'Date Added'];
+                $this->downloadCSV($filename, $header, $data, function($row) {
+                    return [
+                        $row['id'], $row['title'], $row['author'], 
+                        $row['category_name'] ?? $row['category'], 
+                        $row['subject'], $row['resource_type'], 
+                        $row['status'], $row['created_at']
+                    ];
+                });
+            } elseif ($type === 'users') {
+                $data = $this->userModel->getAllUsers();
+                $filename = "lris_users_" . date('Y-m-d') . ".csv";
+                $header = ['ID', 'Student ID', 'Full Name', 'Email', 'Role', 'Date Registered'];
+                $this->downloadCSV($filename, $header, $data, function($row) {
+                    return [$row['id'], $row['student_id'], $row['fullname'], $row['email'], $row['role'], $row['created_at']];
+                });
+            } elseif ($type === 'categories') {
+                $data = $this->categoryModel->getAll();
+                $filename = "lris_categories_" . date('Y-m-d') . ".csv";
+                $header = ['ID', 'Category Name', 'Resource Type'];
+                $this->downloadCSV($filename, $header, $data, function($row) {
+                    return [$row['id'], $row['category_name'], $row['resource_type']];
+                });
+            }
+        }
+
+        require_once __DIR__ . '/../../../views/admin/export_data.php';
+    }
+
+    /**
+     * Helper to stream CSV to browser
+     */
+    private function downloadCSV(string $filename, array $header, array $data, callable $mapper): void
+    {
+        header('Content-Type: text/csv; charset=utf-8');
+        header('Content-Disposition: attachment; filename=' . $filename);
+        
+        $output = fopen('php://output', 'w');
+        
+        // Add BOM for Excel compatibility (UTF-8)
+        fprintf($output, chr(0xEF).chr(0xBB).chr(0xBF));
+        
+        fputcsv($output, $header);
+        
+        foreach ($data as $row) {
+            fputcsv($output, $mapper($row));
+        }
+        
+        fclose($output);
+        exit;
     }
 }
