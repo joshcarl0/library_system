@@ -1,0 +1,54 @@
+/* ══════════════════════════════════════════
+   Olivarez College LRIS — Admin Topbar CSS
+   File: assets/images/css/admin_topbar.css
+   ══════════════════════════════════════════ */
+
+.topbar {
+    height: var(--topbar-h);
+    background: #fff;
+    border-bottom: 1px solid #e2e8f0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 28px;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+.topbar-left h1 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--oc-green);
+}
+.topbar-left p {
+    font-size: 0.78rem;
+    color: var(--text-muted-oc);
+}
+.topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+.topbar-avatar {
+    width: 38px; height: 38px;
+    background: linear-gradient(135deg, var(--oc-green), var(--oc-green-mid));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--oc-gold);
+    font-weight: 700;
+    font-size: 0.9rem;
+    border: 2px solid var(--oc-gold);
+    cursor: pointer;
+}
+.topbar-name {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #1a202c;
+}
+.topbar-role {
+    font-size: 0.72rem;
+    color: var(--text-muted-oc);
+}

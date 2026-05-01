@@ -43,9 +43,6 @@ class Database
 
             // Use real prepared statements (not emulated) — stronger SQL-injection defense
             PDO::ATTR_EMULATE_PREPARES   => false,
-
-            // Disable multi-query execution to prevent stacked-query injection
-            PDO::MYSQL_ATTR_MULTI_STATEMENTS => false,
         ];
 
         try {

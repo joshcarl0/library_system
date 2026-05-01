@@ -18,10 +18,9 @@ class AuthController
     {
         $error = '';
 
-        // If already logged in, redirect to dashboard
+        // If already logged in, redirect to their role-based dashboard
         if (Users::isLoggedIn()) {
-            header("Location: /library_system/index.php?action=dashboard");
-            exit;
+            $this->redirectByRole($_SESSION['role'] ?? '');
         }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -34,10 +33,9 @@ class AuthController
             if ($result['success']) {
                 // Set session data
                 $this->usersModel->startSession($result['user']);
-                
-                // Redirect to dashboard
-                header("Location: /library_system/index.php?action=dashboard");
-                exit;
+
+                // ── RBAC: Redirect based on role ──────────────
+                $this->redirectByRole($result['user']['role']);
             } else {
                 // Pass error to view
                 $error = $result['message'];
@@ -46,6 +44,26 @@ class AuthController
 
         // Load the login view
         require __DIR__ . '/../../../views/login.php';
+    }
+
+    /**
+     * Redirect user to their role-appropriate dashboard.
+     */
+    private function redirectByRole(string $role): void
+    {
+        switch ($role) {
+            case 'admin':
+                header("Location: /library_system/index.php?action=admin_dashboard");
+                break;
+            case 'faculty':
+                header("Location: /library_system/index.php?action=faculty_dashboard");
+                break;
+            case 'student':
+            default:
+                header("Location: /library_system/index.php?action=student_dashboard");
+                break;
+        }
+        exit;
     }
 
     /**

@@ -22,7 +22,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: #0f0c29;
+            background: linear-gradient(135deg, #0d3612 0%, #1B5E20 50%, #0a2a0d 100%);
             overflow: hidden;
             position: relative;
         }
@@ -31,29 +31,29 @@
         .blob {
             position: fixed;
             border-radius: 50%;
-            filter: blur(80px);
-            opacity: 0.55;
+            filter: blur(90px);
+            opacity: 0.45;
             animation: float 8s ease-in-out infinite;
             z-index: 0;
         }
         .blob-1 {
-            width: 500px; height: 500px;
-            background: radial-gradient(circle, #6a11cb, #2575fc);
-            top: -120px; left: -100px;
+            width: 550px; height: 550px;
+            background: radial-gradient(circle, #D4AF37, #a07c10);
+            top: -150px; left: -120px;
             animation-delay: 0s;
         }
         .blob-2 {
-            width: 400px; height: 400px;
-            background: radial-gradient(circle, #c471ed, #f64f59);
-            bottom: -80px; right: -80px;
+            width: 450px; height: 450px;
+            background: radial-gradient(circle, #2e7d32, #1B5E20);
+            bottom: -100px; right: -100px;
             animation-delay: -4s;
         }
         .blob-3 {
             width: 300px; height: 300px;
-            background: radial-gradient(circle, #43e97b, #38f9d7);
-            bottom: 100px; left: 30%;
+            background: radial-gradient(circle, #D4AF37, #f0d060);
+            bottom: 80px; left: 35%;
             animation-delay: -2s;
-            opacity: 0.25;
+            opacity: 0.20;
         }
         @keyframes float {
             0%, 100% { transform: translateY(0px) scale(1); }
@@ -94,7 +94,7 @@
             border-radius: 50%;
             background: #fff;
             padding: 6px;
-            box-shadow: 0 8px 32px rgba(101, 67, 200, 0.5);
+            box-shadow: 0 8px 32px rgba(212, 175, 55, 0.4);
             margin-bottom: 14px;
         }
         .logo-wrap h1 {
@@ -131,8 +131,8 @@
             transition: border-color 0.2s, box-shadow 0.2s;
         }
         .input-group:focus-within {
-            border-color: rgba(101, 67, 200, 0.8);
-            box-shadow: 0 0 0 3px rgba(101, 67, 200, 0.25);
+            border-color: rgba(212, 175, 55, 0.8);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.20);
         }
         .input-group-text {
             background: transparent;
@@ -166,12 +166,12 @@
         /* ── Forgot password ── */
         .forgot-link {
             font-size: 0.80rem;
-            color: #a78bfa;
+            color: #D4AF37;
             text-decoration: none;
             font-weight: 500;
             transition: color 0.2s;
         }
-        .forgot-link:hover { color: #c4b5fd; text-decoration: underline; }
+        .forgot-link:hover { color: #f0d060; text-decoration: underline; }
 
         /* ── Sign In button ── */
         .btn-signin {
@@ -182,15 +182,15 @@
             font-size: 0.95rem;
             font-weight: 700;
             letter-spacing: 0.5px;
-            color: #fff;
-            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
-            box-shadow: 0 6px 24px rgba(106, 17, 203, 0.45);
+            color: #1B5E20;
+            background: linear-gradient(135deg, #D4AF37 0%, #f0d060 100%);
+            box-shadow: 0 6px 24px rgba(212, 175, 55, 0.45);
             transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
             cursor: pointer;
         }
         .btn-signin:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 32px rgba(106, 17, 203, 0.60);
+            box-shadow: 0 10px 32px rgba(212, 175, 55, 0.60);
             opacity: 0.93;
         }
         .btn-signin:active { transform: translateY(0); }
@@ -218,12 +218,12 @@
             font-size: 0.85rem;
         }
         .bottom-text a {
-            color: #a78bfa;
+            color: #D4AF37;
             font-weight: 600;
             text-decoration: none;
             transition: color 0.2s;
         }
-        .bottom-text a:hover { color: #c4b5fd; }
+        .bottom-text a:hover { color: #f0d060; }
 
         /* ── Alert ── */
         .alert-glass {

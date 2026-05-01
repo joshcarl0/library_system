@@ -1,0 +1,61 @@
+/* ══════════════════════════════════════════
+   Olivarez College LRIS — Upload Materials CSS
+   File: assets/images/css/upload_materials.css
+   ══════════════════════════════════════════ */
+
+.upload-card {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.file-drop-area {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    width: 100%;
+    padding: 40px;
+    border: 2px dashed #e2e8f0;
+    border-radius: 14px;
+    background: #f8fafc;
+    transition: all 0.2s;
+    cursor: pointer;
+}
+
+.file-drop-area:hover {
+    border-color: var(--oc-gold);
+    background: #fefce8;
+}
+
+.file-drop-area.active {
+    border-color: var(--oc-green);
+    background: #f0fdf4;
+}
+
+.file-drop-area i {
+    font-size: 3rem;
+    color: var(--oc-gold);
+    margin-bottom: 12px;
+}
+
+.file-drop-area p {
+    margin: 0;
+    font-size: 0.95rem;
+    color: #64748b;
+}
+
+.file-input {
+    position: absolute;
+    left: 0; top: 0; width: 100%; height: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.selected-file-info {
+    margin-top: 15px;
+    font-size: 0.88rem;
+    color: var(--oc-green);
+    font-weight: 600;
+    display: none;
+}

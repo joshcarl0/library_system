@@ -399,6 +399,51 @@ class Users
         );
     }
 
+    /**
+     * Get all users, with optional search and role filter.
+     */
+    public function getAllUsers(string $search = '', string $role = ''): array
+    {
+        $sql    = "SELECT id, student_id, fullname, email, role, created_at FROM users WHERE 1=1";
+        $params = [];
+
+        if (!empty($search)) {
+            $sql .= " AND (fullname LIKE :search OR student_id LIKE :search2 OR email LIKE :search3)";
+            $params['search']  = "%{$search}%";
+            $params['search2'] = "%{$search}%";
+            $params['search3'] = "%{$search}%";
+        }
+
+        if (!empty($role)) {
+            $sql .= " AND role = :role";
+            $params['role'] = $role;
+        }
+
+        $sql .= " ORDER BY created_at DESC";
+
+        return $this->db->fetchAll($sql, $params);
+    }
+
+    /**
+     * Delete a user by ID.
+     */
+    public function deleteUser(int $id): array
+    {
+        try {
+            $affected = $this->db->execute(
+                "DELETE FROM users WHERE id = :id",
+                ['id' => $id]
+            );
+            if ($affected > 0) {
+                return ['success' => true, 'message' => 'User deleted successfully.'];
+            }
+            return ['success' => false, 'message' => 'User not found.'];
+        } catch (\PDOException $e) {
+            error_log('User delete failed: ' . $e->getMessage());
+            return ['success' => false, 'message' => 'Failed to delete user.'];
+        }
+    }
+
     // ════════════════════════════════════════════════════════
     //  BRUTE-FORCE PROTECTION — USER + IP BASED
     // ════════════════════════════════════════════════════════

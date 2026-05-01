@@ -1,0 +1,119 @@
+/* ══════════════════════════════════════════
+   Olivarez College LRIS — Admin Left Sidebar CSS
+   File: assets/images/css/admin_leftsidebar.css
+   ══════════════════════════════════════════ */
+
+.sidebar {
+    width: var(--sidebar-w);
+    min-height: 100vh;
+    background: linear-gradient(175deg, var(--oc-green) 0%, #0d3612 100%);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0; left: 0;
+    z-index: 100;
+    transition: transform 0.3s ease;
+    box-shadow: 4px 0 20px rgba(0,0,0,0.15);
+}
+
+.sidebar-brand {
+    padding: 24px 20px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.sidebar-brand img {
+    width: 44px; height: 44px;
+    object-fit: contain;
+    border-radius: 50%;
+    border: 2px solid var(--oc-gold);
+    background: #fff;
+}
+.sidebar-brand-text h2 {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--oc-gold);
+    line-height: 1.2;
+}
+.sidebar-brand-text span {
+    font-size: 0.72rem;
+    color: rgba(255,255,255,0.55);
+}
+
+.sidebar-menu {
+    flex: 1;
+    padding: 16px 12px;
+    overflow-y: auto;
+}
+.menu-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.35);
+    padding: 16px 10px 8px;
+}
+.menu-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 14px;
+    border-radius: 10px;
+    color: rgba(255,255,255,0.75);
+    text-decoration: none;
+    font-size: 0.88rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    margin-bottom: 2px;
+}
+.menu-item i { font-size: 1.05rem; width: 20px; text-align: center; }
+.menu-item:hover {
+    background: rgba(255,255,255,0.08);
+    color: #fff;
+    transform: translateX(3px);
+}
+.menu-item.active {
+    background: var(--oc-gold);
+    color: var(--oc-green);
+    font-weight: 700;
+    box-shadow: 0 4px 12px rgba(212,175,55,0.35);
+}
+.menu-item.active i { color: var(--oc-green); }
+
+.sidebar-footer {
+    padding: 16px 12px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+}
+.logout-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 14px;
+    border-radius: 10px;
+    color: rgba(255,255,255,0.65);
+    text-decoration: none;
+    font-size: 0.88rem;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+.logout-btn:hover {
+    background: rgba(239,68,68,0.15);
+    color: #fca5a5;
+}
+
+/* ── Sidebar overlay for mobile ── */
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 99;
+}
+
+/* ── Responsive ── */
+@media (max-width: 991px) {
+    .sidebar { transform: translateX(-100%); }
+    .sidebar.open { transform: translateX(0); }
+    .sidebar-overlay.show { display: block; }
+}

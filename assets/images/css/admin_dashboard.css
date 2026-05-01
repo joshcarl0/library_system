@@ -1,0 +1,240 @@
+/* ══════════════════════════════════════════
+   Olivarez College LRIS — Admin Dashboard CSS
+   File: assets/images/css/admin_dashboar.css
+══════════════════════════════════════════ */
+
+:root {
+    --oc-green:      #1B5E20;
+    --oc-green-mid:  #2e7d32;
+    --oc-green-light:#4caf50;
+    --oc-gold:       #D4AF37;
+    --oc-gold-light: #f0d060;
+    --sidebar-w:     260px;
+    --topbar-h:      64px;
+    --bg-page:       #f0f4f0;
+    --card-radius:   16px;
+    --text-muted-oc: rgba(0,0,0,0.5);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg-page);
+    min-height: 100vh;
+    display: flex;
+    overflow-x: hidden;
+}
+
+/* ══════════════════════════════════════════
+   SIDEBAR
+══════════════════════════════════════════ */
+/* Sidebar styles moved */
+
+
+
+
+/* ══════════════════════════════════════════
+   MAIN CONTENT
+══════════════════════════════════════════ */
+.main-wrapper {
+    margin-left: var(--sidebar-w);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Topbar styles moved to admin_topbar.css */
+
+/* PAGE CONTENT */
+.page-content {
+    padding: 28px;
+    flex: 1;
+}
+
+/* ── Stat Cards ── */
+.stat-card {
+    background: #fff;
+    border-radius: var(--card-radius);
+    padding: 24px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border: 1px solid rgba(0,0,0,0.04);
+}
+.stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.10);
+}
+.stat-icon {
+    width: 56px; height: 56px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+.stat-icon.green  { background: rgba(27,94,32,0.1);   color: var(--oc-green); }
+.stat-icon.gold   { background: rgba(212,175,55,0.15); color: #a07c10; }
+.stat-icon.blue   { background: rgba(59,130,246,0.1);  color: #2563eb; }
+.stat-icon.orange { background: rgba(249,115,22,0.1);  color: #ea580c; }
+
+.stat-info .stat-value {
+    font-size: 1.9rem;
+    font-weight: 800;
+    color: #1a202c;
+    line-height: 1;
+}
+.stat-info .stat-label {
+    font-size: 0.80rem;
+    color: var(--text-muted-oc);
+    margin-top: 4px;
+    font-weight: 500;
+}
+.stat-info .stat-change {
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-top: 6px;
+}
+.stat-change.up   { color: #16a34a; }
+.stat-change.down { color: #dc2626; }
+
+/* ── Section Title ── */
+.section-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #1a202c;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.section-title::before {
+    content: '';
+    width: 4px;
+    height: 18px;
+    background: var(--oc-gold);
+    border-radius: 4px;
+    display: block;
+}
+
+/* ── Content Card ── */
+.content-card {
+    background: #fff;
+    border-radius: var(--card-radius);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    border: 1px solid rgba(0,0,0,0.04);
+    overflow: hidden;
+}
+.content-card-header {
+    padding: 18px 22px;
+    border-bottom: 1px solid #f1f5f9;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.content-card-header h3 {
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: #1a202c;
+}
+.btn-view-all {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--oc-green);
+    text-decoration: none;
+    border: 1px solid var(--oc-green);
+    padding: 5px 12px;
+    border-radius: 20px;
+    transition: all 0.2s;
+}
+.btn-view-all:hover {
+    background: var(--oc-green);
+    color: #fff;
+}
+
+/* ── Table ── */
+.table-clean { width: 100%; border-collapse: collapse; }
+.table-clean th {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--text-muted-oc);
+    padding: 10px 22px;
+    background: #f8fafc;
+    border-bottom: 1px solid #e2e8f0;
+    text-align: left;
+}
+.table-clean td {
+    padding: 14px 22px;
+    font-size: 0.85rem;
+    color: #334155;
+    border-bottom: 1px solid #f1f5f9;
+    vertical-align: middle;
+}
+.table-clean tr:last-child td { border-bottom: none; }
+.table-clean tr:hover td { background: #f8faf8; }
+
+/* ── Badge ── */
+.badge-oc {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.72rem;
+    font-weight: 600;
+}
+.badge-available   { background: rgba(22,163,74,0.1);  color: #16a34a; }
+.badge-borrowed    { background: rgba(234,179,8,0.12); color: #a16207; }
+.badge-unavailable { background: rgba(220,38,38,0.1);  color: #dc2626; }
+
+/* ── Quick Action Cards ── */
+.quick-action {
+    background: #fff;
+    border-radius: var(--card-radius);
+    padding: 20px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    border: 1px solid rgba(0,0,0,0.04);
+    transition: all 0.2s;
+    color: #1a202c;
+}
+.quick-action:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(27,94,32,0.12);
+    border-color: var(--oc-gold);
+    color: var(--oc-green);
+}
+.quick-action i {
+    font-size: 1.4rem;
+    width: 44px; height: 44px;
+    background: linear-gradient(135deg, var(--oc-green), var(--oc-green-mid));
+    color: var(--oc-gold);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.quick-action-text span {
+    font-size: 0.88rem;
+    font-weight: 700;
+    display: block;
+}
+.quick-action-text small {
+    font-size: 0.75rem;
+    color: var(--text-muted-oc);
+}
+
+
+/* ── Responsive ── */
+@media (max-width: 991px) {
+    .sidebar-overlay.show { display: block; }
+    .main-wrapper { margin-left: 0; }
+}

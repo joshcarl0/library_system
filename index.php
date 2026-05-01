@@ -8,22 +8,36 @@ if (session_status() === PHP_SESSION_NONE) {
 require_once __DIR__ . '/app/core/database.php';
 require_once __DIR__ . '/app/core/models/Users.php';
 
+// ── Controllers ────────────────────────────────────────────
 require_once __DIR__ . '/app/core/controller/Authcontroller.php';
+require_once __DIR__ . '/app/core/controller/AdminController.php';
+require_once __DIR__ . '/app/core/controller/StudentController.php';
+require_once __DIR__ . '/app/core/controller/FacultyController.php';
 
-// Initialize variables for views (still used in dashboard route for now)
-$error = '';
+// Initialize variables for views
+$error   = '';
 $success = '';
 
 // Simple routing based on the 'action' query parameter
-$action = $_GET['action'] ?? 'login';
+$action = $_GET['action'] ?? 'home';
 
-// Initialize the AuthController
-$authController = new AuthController();
+// Initialize Controllers
+$authController    = new AuthController();
+$adminController   = new AdminController();
+$studentController = new StudentController();
+$facultyController = new FacultyController();
 
 // ── Route Handling ──────────────────────────────────────────
 
 switch ($action) {
-    
+
+    // ════════════════════════════════════════════════════════
+    //  PUBLIC ROUTES
+    // ════════════════════════════════════════════════════════
+    case 'home':
+        require_once __DIR__ . '/views/home.php';
+        break;
+
     // ════════════════════════════════════════════════════════
     //  AUTH ROUTES
     // ════════════════════════════════════════════════════════
@@ -52,15 +66,48 @@ switch ($action) {
         break;
 
     // ════════════════════════════════════════════════════════
-    //  DASHBOARD ROUTE (Protected)
+    //  ADMIN ROUTES  (role: admin)
     // ════════════════════════════════════════════════════════
-    case 'dashboard':
-        // Require login to access this page
-        Users::requireLogin('/library_system/index.php?action=login');
-        
-        echo "<h1>Welcome, " . htmlspecialchars($_SESSION['fullname']) . "!</h1>";
-        echo "<p>You are logged in.</p>";
-        echo "<a href='/library_system/index.php?action=logout'>Log out</a>";
+    case 'admin_dashboard':
+        $adminController->dashboard();
+        break;
+
+    case 'admin_manage_resources':
+        $adminController->manageResources();
+        break;
+
+    case 'admin_upload_materials':
+        $adminController->uploadMaterials();
+        break;
+
+    case 'admin_manage_categories':
+        $adminController->manageCategories();
+        break;
+
+    // ════════════════════════════════════════════════════════
+    //  STUDENT ROUTES  (role: student)
+    // ════════════════════════════════════════════════════════
+    case 'student_dashboard':
+        $studentController->dashboard();
+        break;
+
+    case 'student_search':
+        $studentController->searchResources();
+        break;
+
+    case 'student_borrowed':
+        $studentController->borrowedItems();
+        break;
+
+    // ════════════════════════════════════════════════════════
+    //  FACULTY ROUTES  (role: faculty)
+    // ════════════════════════════════════════════════════════
+    case 'faculty_dashboard':
+        $facultyController->dashboard();
+        break;
+
+    case 'faculty_upload':
+        $facultyController->uploadMaterials();
         break;
 
     // ════════════════════════════════════════════════════════
