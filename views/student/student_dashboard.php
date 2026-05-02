@@ -16,11 +16,9 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- Shared CSS -->
-    <link rel="stylesheet" href="/library_system/assets/images/css/admin_dashboard.css">
-    <link rel="stylesheet" href="/library_system/assets/images/css/admin_leftsidebar.css">
-    <link rel="stylesheet" href="/library_system/assets/images/css/admin_topbar.css">
     <!-- Student Specific CSS -->
+    <link rel="stylesheet" href="/library_system/assets/images/css/student/student_sidebar.css">
+    <link rel="stylesheet" href="/library_system/assets/images/css/student/student_topbar.css">
     <link rel="stylesheet" href="/library_system/assets/images/css/student/student_dashboard.css">
 </head>
 <body>
@@ -39,8 +37,8 @@
         <div class="welcome-banner">
             <div class="row align-items-center">
                 <div class="col-lg-7">
-                    <h1>Magandang Araw, <?= explode(' ', $_SESSION['fullname'])[0] ?>! 👋</h1>
-                    <p>Anong libro o research material ang hinahanap mo ngayon?</p>
+                    <h1>Good Day, <?= explode(' ', $_SESSION['fullname'])[0] ?>! 👋</h1>
+                    <p>What resource or research material are you looking for today?</p>
                     
                     <form action="/library_system/index.php" method="GET" class="search-hero">
                         <input type="hidden" name="action" value="student_search">

@@ -1,7 +1,9 @@
 <!-- ══════════ SIDEBAR ══════════ -->
 <aside class="sidebar" id="sidebar">
     <div class="sidebar-brand">
-        <img src="/library_system/assets/images/olivarez_logo.png" alt="OC Logo">
+        <div class="logo-circle">
+            <img src="/library_system/assets/images/olivarez_logo.png" alt="OC Logo">
+        </div>
         <div class="sidebar-brand-text">
             <h2>Olivarez College</h2>
             <span>LRIS Admin Panel</span>
@@ -13,6 +15,9 @@
         <div class="menu-label">Main</div>
         <a href="/library_system/index.php?action=admin_dashboard" class="menu-item <?= ($current_action === 'admin_dashboard') ? 'active' : '' ?>" id="nav-dashboard">
             <i class="bi bi-speedometer2"></i> Dashboard
+        </a>
+        <a href="/library_system/index.php?action=admin_profile" class="menu-item <?= ($current_action === 'admin_profile') ? 'active' : '' ?>" id="nav-profile">
+            <i class="bi bi-person-badge"></i> My Profile
         </a>
 
         <div class="menu-label">Resources</div>

@@ -1,0 +1,115 @@
+/* ══════════════════════════════════════════
+   Olivarez College LRIS — Search Resources CSS
+   File: assets/images/css/student/search_resources.css
+   ══════════════════════════════════════════ */
+
+.search-header-box {
+    background: #fff;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    margin-bottom: 30px;
+    border: 1px solid #f1f5f9;
+}
+
+.filter-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr auto;
+    gap: 15px;
+    align-items: end;
+}
+
+.filter-group label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #64748b;
+    margin-bottom: 8px;
+    display: block;
+    letter-spacing: 0.5px;
+}
+
+.filter-group .form-control,
+.filter-group .form-select {
+    border: 1px solid #e2e8f0;
+    padding: 10px 15px;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    background-color: #f8fafc;
+}
+
+.filter-group .form-control:focus,
+.filter-group .form-select:focus {
+    border-color: var(--oc-gold);
+    background-color: #fff;
+    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+}
+
+.btn-search-apply {
+    background: var(--oc-gold);
+    color: var(--oc-green);
+    border: none;
+    padding: 10px 25px;
+    border-radius: 12px;
+    font-weight: 700;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s;
+}
+
+.btn-search-apply:hover {
+    background: var(--oc-green);
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+.results-count {
+    font-size: 0.9rem;
+    color: #64748b;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.results-count strong {
+    color: var(--oc-green);
+}
+
+/* Empty State */
+.empty-results {
+    text-align: center;
+    padding: 80px 20px;
+    background: #fff;
+    border-radius: 20px;
+    border: 2px dashed #e2e8f0;
+}
+
+.empty-results i {
+    font-size: 4rem;
+    color: #cbd5e1;
+    margin-bottom: 20px;
+    display: block;
+}
+
+.empty-results h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 10px;
+}
+
+.empty-results p {
+    color: #64748b;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+/* Pagination placeholder */
+.pagination-wrap {
+    margin-top: 40px;
+    display: flex;
+    justify-content: center;
+}

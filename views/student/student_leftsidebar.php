@@ -29,7 +29,7 @@ $current_action = $_GET['action'] ?? 'student_dashboard';
         </a>
 
         <div class="menu-label">Account</div>
-        <a href="#" class="menu-item">
+        <a href="/library_system/index.php?action=student_profile" class="menu-item <?= ($current_action === 'student_profile') ? 'active' : '' ?>">
             <i class="bi bi-person-fill"></i> My Profile
         </a>
         <a href="/library_system/index.php?action=logout" class="menu-item text-danger mt-4">

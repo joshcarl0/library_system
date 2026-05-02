@@ -71,6 +71,9 @@ switch ($action) {
     case 'admin_dashboard':
         $adminController->dashboard();
         break;
+    case 'admin_profile':
+        $adminController->myProfile();
+        break;
 
     case 'admin_manage_resources':
         $adminController->manageResources();
@@ -113,6 +116,14 @@ switch ($action) {
 
     case 'student_borrowed':
         $studentController->borrowedItems();
+        break;
+
+    case 'student_profile':
+        $studentController->myProfile();
+        break;
+
+    case 'student_notifications':
+        $studentController->notifications();
         break;
 
     // ════════════════════════════════════════════════════════

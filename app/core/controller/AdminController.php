@@ -27,6 +27,13 @@ class AdminController
         require_once __DIR__ . '/../../../views/admin/admin_dashboard.php';
     }
 
+    public function myProfile(): void
+    {
+        Users::requireRole('admin', '/library_system/index.php?action=login');
+        $user = $this->userModel->findById($_SESSION['user_id']);
+        require_once __DIR__ . '/../../../views/admin/admin_profile.php';
+    }
+
     // ════════════════════════════════════════════════════════
     //  MANAGE RESOURCES — List + CRUD handler
     // ════════════════════════════════════════════════════════

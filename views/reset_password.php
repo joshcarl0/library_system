@@ -13,13 +13,15 @@
     <style>
         /* Shared Styles matching login.php */
         :root {
+            --oc-green: #0d3612;
+            --oc-gold: #d4af37;
             --glass-bg: rgba(255, 255, 255, 0.08);
             --glass-border: rgba(255, 255, 255, 0.1);
             --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
-            --primary-accent: #4f46e5;
-            --primary-hover: #4338ca;
+            --primary-accent: var(--oc-gold);
+            --primary-hover: #b8962d;
             --text-main: #f8fafc;
-            --text-muted: #94a3b8;
+            --text-muted: #cbd5e1;
             --error-color: #ef4444;
             --success-color: #10b981;
         }
@@ -30,7 +32,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background-color: #0f172a;
+            background: linear-gradient(135deg, #051d08 0%, #0d3612 100%);
             color: var(--text-main);
             overflow: hidden;
             position: relative;
@@ -41,13 +43,13 @@
             position: absolute;
             filter: blur(80px);
             z-index: -1;
-            opacity: 0.6;
+            opacity: 0.3;
             animation: float 10s infinite ease-in-out alternate;
         }
         .blob-1 {
             width: 400px;
             height: 400px;
-            background: linear-gradient(135deg, #4f46e5, #ec4899);
+            background: var(--oc-gold);
             top: -100px;
             left: -100px;
             border-radius: 50%;
@@ -55,7 +57,7 @@
         .blob-2 {
             width: 300px;
             height: 300px;
-            background: linear-gradient(135deg, #0ea5e9, #3b82f6);
+            background: #16a34a;
             bottom: -50px;
             right: -50px;
             border-radius: 50%;
@@ -88,41 +90,45 @@
         }
         .logo-wrap i.bi-key {
             font-size: 3rem;
-            color: var(--primary-accent);
-            background: rgba(255,255,255,0.9);
+            color: var(--oc-gold);
+            background: rgba(255,255,255,0.1);
             border-radius: 50%;
-            padding: 15px 25px;
+            padding: 20px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
             display: inline-block;
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
+            border: 2px solid var(--oc-gold);
         }
         .logo-wrap h1 {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 0.25rem;
+            font-size: 1.6rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
             letter-spacing: -0.5px;
         }
         .logo-wrap p {
             color: var(--text-muted);
-            font-size: 0.875rem;
+            font-size: 0.9rem;
             margin-bottom: 0;
+            line-height: 1.5;
+            font-weight: 500;
         }
 
         /* Form Inputs */
         .form-label {
-            font-size: 0.875rem;
-            font-weight: 500;
+            font-size: 0.8rem;
+            font-weight: 700;
             color: var(--text-muted);
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.6rem;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 1px;
         }
 
         .input-group-text {
             background: rgba(255,255,255,0.05);
             border: 1px solid var(--glass-border);
             border-right: none;
-            color: var(--text-muted);
+            color: var(--oc-gold);
+            border-radius: 12px 0 0 12px;
         }
 
         .form-control {
@@ -130,38 +136,43 @@
             border: 1px solid var(--glass-border);
             border-left: none;
             color: var(--text-main);
-            padding: 0.75rem 1rem;
+            padding: 0.8rem 1rem;
             font-size: 0.95rem;
+            border-radius: 0 12px 12px 0;
         }
 
         .form-control:focus {
             background: rgba(255,255,255,0.1);
-            border-color: var(--primary-accent);
+            border-color: var(--oc-gold);
             color: var(--text-main);
             box-shadow: none;
         }
 
         .input-group:focus-within .input-group-text {
-            border-color: var(--primary-accent);
-            color: var(--primary-accent);
+            border-color: var(--oc-gold);
+            color: var(--oc-gold);
         }
 
         /* Button */
         .btn-primary {
-            background: var(--primary-accent);
+            background: var(--oc-gold);
+            color: var(--oc-green);
             border: none;
-            border-radius: 12px;
-            padding: 0.875rem;
-            font-weight: 600;
+            border-radius: 14px;
+            padding: 0.9rem;
+            font-weight: 800;
             width: 100%;
             margin-top: 1.5rem;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .btn-primary:hover {
-            background: var(--primary-hover);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.4);
+            background: #fff;
+            color: var(--oc-green);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(212, 175, 55, 0.3);
         }
 
         /* Alerts */
@@ -169,13 +180,13 @@
             background: rgba(239, 68, 68, 0.1);
             border: 1px solid rgba(239, 68, 68, 0.2);
             color: #fca5a5;
-            padding: 0.75rem 1rem;
-            border-radius: 12px;
-            font-size: 0.875rem;
+            padding: 0.8rem 1rem;
+            border-radius: 14px;
+            font-size: 0.85rem;
             margin-bottom: 1.5rem;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.8rem;
         }
     </style>
 </head>

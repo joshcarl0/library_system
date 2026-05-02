@@ -1,113 +1,56 @@
 /* ══════════════════════════════════════════
-   Olivarez College LRIS — Admin Topbar CSS
-   File: assets/images/css/admin_topbar.css
+   Olivarez College LRIS — Student Topbar
+   File: assets/images/css/student/student_topbar.css
    ══════════════════════════════════════════ */
 
 .topbar {
-    height: var(--topbar-h);
+    height: 80px;
     background: rgba(255, 255, 255, 0.8);
-    backdrop-filter: blur(15px);
-    border-bottom: 1px solid rgba(0,0,0,0.05);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 30px;
+    padding: 0 40px;
     position: sticky;
     top: 0;
-    z-index: 999;
+    z-index: 900;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
 }
 
-.topbar-right-new {
+.page-context .fw-700 {
+    font-size: 1.1rem;
+    color: var(--oc-green);
+    letter-spacing: -0.5px;
+}
+
+.topbar-actions {
     display: flex;
     align-items: center;
     gap: 10px;
 }
 
-.action-icon-admin {
-    width: 40px;
-    height: 40px;
+.action-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 12px;
     color: #64748b;
-    font-size: 1.2rem;
     cursor: pointer;
-    transition: all 0.3s;
+    transition: all 0.2s;
+    background: #f8fafc;
     position: relative;
 }
 
-.action-icon-admin:hover {
+.action-icon:hover {
     background: #f1f5f9;
     color: var(--oc-green);
     transform: translateY(-2px);
 }
 
-.user-profile-admin {
-    display: flex;
-    align-items: center;
-    padding: 6px 6px 6px 15px;
-    background: #f8fafc;
-    border-radius: 14px;
-    border: 1px solid #f1f5f9;
-    transition: all 0.3s;
-    cursor: pointer;
-}
-
-.user-profile-admin:hover {
-    border-color: var(--oc-gold);
-    background: #fff;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-}
-
-.ua-name {
-    font-size: 0.85rem;
-    font-weight: 700;
-    color: #1e293b;
-    line-height: 1.2;
-}
-
-.ua-role {
-    font-size: 0.7rem;
-    font-weight: 600;
-    color: #94a3b8;
-    text-transform: uppercase;
-}
-
-.ua-avatar {
-    width: 36px;
-    height: 36px;
-    background: linear-gradient(135deg, var(--oc-green) 0%, #0d3612 100%);
-    color: var(--oc-gold);
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 800;
-    font-size: 0.9rem;
-    margin-left: 10px;
-}
-
-.notification-dot {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    width: 8px;
-    height: 8px;
-    background: #ef4444;
-    border-radius: 50%;
-    border: 2px solid #fff;
-}
-
-.mobile-toggle {
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    color: var(--oc-green);
-    padding: 0;
-}
-
-/* ── Notification Dropdown ── */
+/* Dropdown Custom Styles */
 .notification-dropdown {
     width: 320px;
     padding: 0;
@@ -139,15 +82,10 @@
     text-decoration: none;
     border-bottom: 1px solid #f8fafc;
     transition: background 0.2s;
-    cursor: pointer;
 }
 
 .notification-item:hover {
     background: #f8fafc;
-}
-
-.notification-item.unread {
-    background: rgba(212, 175, 55, 0.05);
 }
 
 .ni-icon {
@@ -190,4 +128,52 @@
     font-weight: 700;
     color: var(--oc-green);
     text-decoration: none;
+}
+
+.profile-dropdown {
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    padding: 8px;
+    border: 1px solid #f1f5f9;
+    margin-top: 10px !important;
+}
+
+.profile-dropdown .dropdown-item {
+    border-radius: 8px;
+    padding: 10px 15px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #475569;
+}
+
+.profile-dropdown .dropdown-item:hover {
+    background: #f8fafc;
+    color: var(--oc-green);
+}
+
+.notification-dot {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 8px;
+    height: 8px;
+    background: #ef4444;
+    border-radius: 50%;
+    border: 2px solid #fff;
+}
+
+.user-profile-trigger {
+    display: flex;
+    align-items: center;
+    padding: 6px 12px;
+    background: #f8fafc;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 1px solid #f1f5f9;
+}
+
+.user-profile-trigger:hover {
+    background: #fff;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
 }

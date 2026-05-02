@@ -1,0 +1,145 @@
+/* ══════════════════════════════════════════
+   Olivarez College LRIS — My Profile CSS
+   File: assets/images/css/student/my_profile.css
+   ══════════════════════════════════════════ */
+
+.profile-card {
+    background: #fff;
+    border-radius: 24px;
+    padding: 40px;
+    box-shadow: 0 4px 25px rgba(0,0,0,0.05);
+    border: 1px solid #f1f5f9;
+    margin-bottom: 30px;
+}
+
+.profile-header {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    margin-bottom: 40px;
+    padding-bottom: 30px;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.profile-avatar-large {
+    width: 100px;
+    height: 100px;
+    background: linear-gradient(135deg, var(--oc-green) 0%, #0d3612 100%);
+    color: var(--oc-gold);
+    border-radius: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    font-weight: 800;
+    box-shadow: 0 10px 20px rgba(13, 54, 18, 0.2);
+}
+
+.profile-title-area h2 {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--oc-green);
+    margin-bottom: 5px;
+}
+
+.profile-title-area .badge {
+    padding: 8px 16px;
+    border-radius: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.5px;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.info-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.info-value {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #334155;
+}
+
+/* Security Section */
+.security-card {
+    background: #fff;
+    border-radius: 20px;
+    padding: 30px;
+    border: 1px solid #f1f5f9;
+}
+
+.security-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
+    color: var(--oc-green);
+}
+
+.security-header i {
+    font-size: 1.5rem;
+}
+
+.security-header h3 {
+    font-size: 1.2rem;
+    font-weight: 800;
+    margin: 0;
+}
+
+.form-group-custom {
+    margin-bottom: 20px;
+}
+
+.form-group-custom label {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #64748b;
+    margin-bottom: 10px;
+    display: block;
+}
+
+.form-group-custom .form-control {
+    border: 1px solid #e2e8f0;
+    padding: 12px 15px;
+    border-radius: 12px;
+    background: #f8fafc;
+}
+
+.form-group-custom .form-control:focus {
+    border-color: var(--oc-gold);
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+}
+
+.btn-update-password {
+    background: var(--oc-green);
+    color: #fff;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 12px;
+    font-weight: 700;
+    transition: all 0.3s;
+}
+
+.btn-update-password:hover {
+    background: var(--oc-gold);
+    color: var(--oc-green);
+    transform: translateY(-2px);
+}

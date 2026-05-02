@@ -33,59 +33,66 @@
     <main class="page-content">
 
         <!-- Welcome Banner -->
-        <div class="p-4 mb-4 rounded-3" style="background: linear-gradient(135deg, var(--oc-green) 0%, #0d3612 100%); color:#fff; position:relative; overflow:hidden;">
-            <div style="position:absolute; top:-20px; right:-20px; width:180px; height:180px; border-radius:50%; background:rgba(212,175,55,0.1);"></div>
-            <div style="position:absolute; bottom:-40px; right:80px; width:120px; height:120px; border-radius:50%; background:rgba(212,175,55,0.07);"></div>
-            <h2 style="font-weight:800; font-size:1.3rem;">
-                Welcome back, <?php echo htmlspecialchars($_SESSION['fullname'] ?? 'Administrator', ENT_QUOTES, 'UTF-8'); ?>! 👋
-            </h2>
-            <p style="opacity:0.8; font-size:0.88rem; margin-top:6px;">
-                Here's what's happening with the Learning Resource Info System today.
-            </p>
-            <span style="display:inline-block; margin-top:12px; background:var(--oc-gold); color:var(--oc-green); padding:6px 16px; border-radius:20px; font-size:0.80rem; font-weight:700;">
-                "Educating the Mind, Body and Soul."
-            </span>
+        <div class="welcome-banner-admin mb-4">
+            <div class="banner-content">
+                <div class="banner-text">
+                    <h2>Welcome back, <?= htmlspecialchars($_SESSION['fullname'] ?? 'Administrator') ?>! 👋</h2>
+                    <p>Here's what's happening with the Learning Resource Info System today.</p>
+                    <div class="banner-badge">"Educating the Mind, Body and Soul."</div>
+                </div>
+                <div class="banner-img">
+                    <img src="/library_system/assets/images/olivarez_logo.png" alt="OC Logo" class="banner-logo-floating">
+                </div>
+            </div>
         </div>
 
         <!-- ── Stat Cards ── -->
-        <div class="row g-3 mb-4">
-            <div class="col-6 col-xl-3">
-                <div class="stat-card">
-                    <div class="stat-icon green"><i class="bi bi-journal-bookmark-fill"></i></div>
-                    <div class="stat-info">
-                        <div class="stat-value">0</div>
-                        <div class="stat-label">Total Resources</div>
-                        <div class="stat-change up"><i class="bi bi-arrow-up-short"></i> 0 this month</div>
+        <div class="row g-4 mb-4">
+            <div class="col-md-6 col-xl-3">
+                <div class="stat-card-new">
+                    <div class="scn-icon bg-success-subtle text-success">
+                        <i class="bi bi-journal-bookmark-fill"></i>
+                    </div>
+                    <div class="scn-info">
+                        <span class="scn-label">Total Resources</span>
+                        <h3 class="scn-value">0</h3>
+                        <span class="scn-trend text-success"><i class="bi bi-graph-up"></i> 0 this month</span>
                     </div>
                 </div>
             </div>
-            <div class="col-6 col-xl-3">
-                <div class="stat-card">
-                    <div class="stat-icon gold"><i class="bi bi-people-fill"></i></div>
-                    <div class="stat-info">
-                        <div class="stat-value">0</div>
-                        <div class="stat-label">Registered Users</div>
-                        <div class="stat-change up"><i class="bi bi-arrow-up-short"></i> 0 new today</div>
+            <div class="col-md-6 col-xl-3">
+                <div class="stat-card-new">
+                    <div class="scn-icon bg-warning-subtle text-warning">
+                        <i class="bi bi-people-fill"></i>
+                    </div>
+                    <div class="scn-info">
+                        <span class="scn-label">Registered Users</span>
+                        <h3 class="scn-value">0</h3>
+                        <span class="scn-trend text-warning"><i class="bi bi-person-plus"></i> 0 new today</span>
                     </div>
                 </div>
             </div>
-            <div class="col-6 col-xl-3">
-                <div class="stat-card">
-                    <div class="stat-icon blue"><i class="bi bi-box-arrow-in-down"></i></div>
-                    <div class="stat-info">
-                        <div class="stat-value">0</div>
-                        <div class="stat-label">Active Borrows</div>
-                        <div class="stat-change up"><i class="bi bi-arrow-up-short"></i> 0 today</div>
+            <div class="col-md-6 col-xl-3">
+                <div class="stat-card-new">
+                    <div class="scn-icon bg-primary-subtle text-primary">
+                        <i class="bi bi-box-arrow-in-down"></i>
+                    </div>
+                    <div class="scn-info">
+                        <span class="scn-label">Active Borrows</span>
+                        <h3 class="scn-value">0</h3>
+                        <span class="scn-trend text-primary"><i class="bi bi-clock-history"></i> 0 today</span>
                     </div>
                 </div>
             </div>
-            <div class="col-6 col-xl-3">
-                <div class="stat-card">
-                    <div class="stat-icon orange"><i class="bi bi-file-earmark-pdf-fill"></i></div>
-                    <div class="stat-info">
-                        <div class="stat-value">0</div>
-                        <div class="stat-label">Digital Files</div>
-                        <div class="stat-change up"><i class="bi bi-arrow-up-short"></i> 0 uploaded</div>
+            <div class="col-md-6 col-xl-3">
+                <div class="stat-card-new">
+                    <div class="scn-icon bg-danger-subtle text-danger">
+                        <i class="bi bi-file-earmark-pdf-fill"></i>
+                    </div>
+                    <div class="scn-info">
+                        <span class="scn-label">Digital Files</span>
+                        <h3 class="scn-value">0</h3>
+                        <span class="scn-trend text-danger"><i class="bi bi-cloud-check"></i> 0 uploaded</span>
                     </div>
                 </div>
             </div>
