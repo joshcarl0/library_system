@@ -89,4 +89,32 @@ class StudentController
         
         require_once __DIR__ . '/../../../views/student/notifications.php';
     }
+
+    /**
+     * API Endpoint for real-time notification polling
+     */
+    public function apiGetNotifications(): void
+    {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        if (!isset($_SESSION['user_id'])) {
+            header('Content-Type: application/json');
+            echo json_encode(['error' => 'Unauthorized']);
+            exit;
+        }
+
+        $userId = $_SESSION['user_id'];
+        $unreadCount = $this->notificationModel->getUnreadCount($userId);
+        $recentNotifs = $this->notificationModel->getByUser($userId, 'all');
+        $recentNotifs = array_slice($recentNotifs, 0, 5);
+
+        header('Content-Type: application/json');
+        echo json_encode([
+            'unreadCount' => $unreadCount,
+            'notifications' => $recentNotifs
+        ]);
+        exit;
+    }
 }

@@ -66,6 +66,17 @@ class Resources
     }
 
     /**
+     * Get resources uploaded by a specific user.
+     */
+    public function getByUploader(int $userId): array
+    {
+        return $this->db->fetchAll(
+            "SELECT * FROM resources WHERE uploaded_by = :user_id ORDER BY created_at DESC",
+            ['user_id' => $userId]
+        );
+    }
+
+    /**
      * Count total resources.
      */
     public function countAll(): int
@@ -106,19 +117,29 @@ class Resources
         $category    = trim($data['category'] ?? '');
         $type        = trim($data['type'] ?? 'book');
         $description = trim($data['description'] ?? '');
-        $status      = in_array($data['status'] ?? '', ['available', 'borrowed', 'unavailable'])
-                       ? $data['status'] : 'available';
-        $file_path   = trim($data['file_path'] ?? '');
+        $status      = $data['status'] ?? 'available';
+        $filePath    = $data['file_path'] ?? null;
+        $uploadedBy  = $data['uploaded_by'] ?? null;
 
         if (empty($title) || empty($author)) {
-            return ['success' => false, 'message' => 'Title and Author are required.'];
+            return ['success' => false, 'message' => 'Title and author are required.'];
         }
 
         try {
             $this->db->execute(
-                "INSERT INTO resources (title, author, subject, category, type, description, status, file_path, created_at)
-                 VALUES (:title, :author, :subject, :category, :type, :description, :status, :file_path, NOW())",
-                compact('title', 'author', 'subject', 'category', 'type', 'description', 'status', 'file_path')
+                "INSERT INTO resources (title, author, subject, category, type, description, status, file_path, uploaded_by, created_at)
+                 VALUES (:title, :author, :subject, :category, :type, :description, :status, :file_path, :uploaded_by, NOW())",
+                [
+                    'title'       => $title,
+                    'author'      => $author,
+                    'subject'     => $subject,
+                    'category'    => $category,
+                    'type'        => $type,
+                    'description' => $description,
+                    'status'      => $status,
+                    'file_path'   => $filePath,
+                    'uploaded_by' => $uploadedBy
+                ]
             );
             return ['success' => true, 'message' => 'Resource added successfully.'];
         } catch (\PDOException $e) {

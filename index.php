@@ -126,6 +126,10 @@ switch ($action) {
         $studentController->notifications();
         break;
 
+    case 'api_get_notifications':
+        $studentController->apiGetNotifications();
+        break;
+
     // ════════════════════════════════════════════════════════
     //  FACULTY ROUTES  (role: faculty)
     // ════════════════════════════════════════════════════════
@@ -135,6 +139,23 @@ switch ($action) {
 
     case 'faculty_upload':
         $facultyController->uploadMaterials();
+        break;
+
+    case 'faculty_my_uploads':
+        $facultyController->myUploads();
+        break;
+
+    case 'faculty_notifications':
+        // Redirect to a simple notifications page (can be expanded like student_notifications)
+        header('Location: /library_system/index.php?action=faculty_dashboard');
+        exit;
+
+    case 'faculty_profile':
+        $facultyController->profile();
+        break;
+
+    case 'faculty_api_get_notifications':
+        $facultyController->apiGetNotifications();
         break;
 
     // ════════════════════════════════════════════════════════

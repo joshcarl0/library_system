@@ -632,4 +632,34 @@ class Users
             ['user_id' => $userId, 'ip' => $ip]
         );
     }
+
+    // ── Profile ──────────────────────────────────────────────
+    
+    /**
+     * Update user password with current password verification.
+     */
+    public function changePassword(int $userId, string $currentPassword, string $newPassword): array
+    {
+        $user = $this->findById($userId);
+        if (!$user) {
+            return ['success' => false, 'message' => 'User not found.'];
+        }
+
+        // We need the password hash which is in the raw row (findById returns it)
+        if (!password_verify($currentPassword, $user['password'])) {
+            return ['success' => false, 'message' => 'Incorrect current password.'];
+        }
+
+        $hashedPassword = password_hash($newPassword, PASSWORD_BCRYPT);
+        try {
+            $this->db->execute(
+                "UPDATE users SET password = :password WHERE id = :id",
+                ['password' => $hashedPassword, 'id' => $userId]
+            );
+            return ['success' => true, 'message' => 'Password updated successfully.'];
+        } catch (\PDOException $e) {
+            error_log('Password update failed: ' . $e->getMessage());
+            return ['success' => false, 'message' => 'Database error occurred while updating password.'];
+        }
+    }
 }

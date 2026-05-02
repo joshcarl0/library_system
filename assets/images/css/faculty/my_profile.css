@@ -1,0 +1,133 @@
+/* ══════════════════════════════════════════
+   Faculty — My Profile CSS
+   File: assets/images/css/faculty/my_profile.css
+   ══════════════════════════════════════════ */
+
+.profile-card {
+    background: #fff;
+    border-radius: 20px;
+    padding: 40px 30px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+    border: 1px solid rgba(0,0,0,0.05);
+    height: 100%;
+}
+
+.profile-avatar-large {
+    width: 100px;
+    height: 100px;
+    background: linear-gradient(135deg, var(--oc-green) 0%, #0d3612 100%);
+    color: var(--oc-gold);
+    border-radius: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 2.5rem;
+    margin: 0 auto 20px;
+    box-shadow: 0 10px 20px rgba(13, 54, 18, 0.15);
+}
+
+.profile-name {
+    font-weight: 800;
+    color: #1e293b;
+    margin-bottom: 5px;
+    font-size: 1.3rem;
+}
+
+.profile-role {
+    color: var(--oc-green);
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0;
+}
+
+.profile-details {
+    border-top: 1px dashed #e2e8f0;
+    padding-top: 25px;
+}
+
+.pd-item {
+    margin-bottom: 20px;
+}
+
+.pd-item:last-child {
+    margin-bottom: 0;
+}
+
+.pd-label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 5px;
+}
+
+.pd-value {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #334155;
+    display: flex;
+    align-items: center;
+}
+
+/* Settings Card */
+.settings-card {
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+    border: 1px solid rgba(0,0,0,0.05);
+    height: 100%;
+    overflow: hidden;
+}
+
+.settings-header {
+    background: #f8fafc;
+    padding: 25px 30px;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.settings-header h5 {
+    font-weight: 800;
+    color: #1e293b;
+    margin-bottom: 5px;
+}
+
+.settings-header p {
+    color: #64748b;
+    font-size: 0.85rem;
+    margin-bottom: 0;
+}
+
+.settings-body {
+    padding: 30px;
+}
+
+.form-control-lg {
+    border-radius: 12px;
+    font-size: 0.95rem;
+    border: 1px solid #e2e8f0;
+    padding: 12px 15px;
+}
+
+.form-control-lg:focus {
+    border-color: var(--oc-green);
+    box-shadow: 0 0 0 4px rgba(25, 135, 84, 0.1);
+}
+
+.btn-dark {
+    background: #1e293b;
+    border: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: all 0.3s;
+}
+
+.btn-dark:hover {
+    background: var(--oc-green);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(25, 135, 84, 0.2) !important;
+}
