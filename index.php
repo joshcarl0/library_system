@@ -103,6 +103,18 @@ switch ($action) {
         $adminController->exportData();
         break;
 
+    case 'admin_manage_requests':
+        $adminController->manageRequests();
+        break;
+
+    case 'admin_approve_request':
+        $adminController->approveRequest();
+        break;
+
+    case 'admin_return_resource':
+        $adminController->returnResource();
+        break;
+
     // ════════════════════════════════════════════════════════
     //  STUDENT ROUTES  (role: student)
     // ════════════════════════════════════════════════════════
@@ -130,6 +142,10 @@ switch ($action) {
         $studentController->apiGetNotifications();
         break;
 
+    case 'student_borrow':
+        $studentController->borrow();
+        break;
+
     // ════════════════════════════════════════════════════════
     //  FACULTY ROUTES  (role: faculty)
     // ════════════════════════════════════════════════════════
@@ -146,9 +162,8 @@ switch ($action) {
         break;
 
     case 'faculty_notifications':
-        // Redirect to a simple notifications page (can be expanded like student_notifications)
-        header('Location: /library_system/index.php?action=faculty_dashboard');
-        exit;
+        $facultyController->notifications();
+        break;
 
     case 'faculty_profile':
         $facultyController->profile();

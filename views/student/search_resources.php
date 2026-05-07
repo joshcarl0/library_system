@@ -54,8 +54,8 @@ $search_type  = $_GET['type'] ?? '';
                         <select name="category" class="form-select">
                             <option value="">All Categories</option>
                             <?php foreach($categories as $cat): ?>
-                            <option value="<?= $cat['id'] ?>" <?= ($search_cat == $cat['id']) ? 'selected' : '' ?>>
-                                <?= htmlspecialchars($cat['category_name']) ?>
+                            <option value="<?= htmlspecialchars($cat['category'] ?? '') ?>" <?= ($search_cat == ($cat['category'] ?? '')) ? 'selected' : '' ?>>
+                                <?= htmlspecialchars($cat['category'] ?? '') ?>
                             </option>
                             <?php endforeach; ?>
                         </select>
@@ -64,10 +64,11 @@ $search_type  = $_GET['type'] ?? '';
                         <label>Resource Type</label>
                         <select name="type" class="form-select">
                             <option value="">All Types</option>
-                            <option value="Book" <?= ($search_type === 'Book') ? 'selected' : '' ?>>Book</option>
-                            <option value="E-Book" <?= ($search_type === 'E-Book') ? 'selected' : '' ?>>E-Book</option>
-                            <option value="Journal" <?= ($search_type === 'Journal') ? 'selected' : '' ?>>Journal</option>
-                            <option value="Thesis" <?= ($search_type === 'Thesis') ? 'selected' : '' ?>>Thesis</option>
+                            <option value="book" <?= ($search_type === 'book') ? 'selected' : '' ?>>Book</option>
+                            <option value="digital" <?= ($search_type === 'digital') ? 'selected' : '' ?>>Digital File</option>
+                            <option value="journal" <?= ($search_type === 'journal') ? 'selected' : '' ?>>Journal</option>
+                            <option value="thesis" <?= ($search_type === 'thesis') ? 'selected' : '' ?>>Thesis</option>
+                            <option value="module" <?= ($search_type === 'module') ? 'selected' : '' ?>>Module</option>
                         </select>
                     </div>
                     <div class="filter-group">
@@ -101,20 +102,27 @@ $search_type  = $_GET['type'] ?? '';
             <div class="col-sm-6 col-md-4 col-xl-3">
                 <div class="resource-card-student">
                     <div class="resource-thumb">
-                        <i class="bi bi-journal-text"></i>
-                        <span class="type-badge"><?= htmlspecialchars($r['resource_type']) ?></span>
+                        <?php if (!empty($r['cover_image'])): ?>
+                            <img src="<?= htmlspecialchars($r['cover_image']) ?>" alt="Cover" class="w-100 h-100 object-fit-cover rounded-3">
+                        <?php else: ?>
+                            <i class="bi bi-journal-text"></i>
+                        <?php endif; ?>
+                        <span class="type-badge"><?= htmlspecialchars($r['type'] ?? 'Material') ?></span>
                     </div>
                     <div class="resource-body">
-                        <div class="resource-category"><?= htmlspecialchars($r['category_name'] ?? 'General') ?></div>
+                        <div class="resource-category"><?= htmlspecialchars($r['category'] ?? 'General') ?></div>
                         <div class="resource-title"><?= htmlspecialchars($r['title']) ?></div>
                         <div class="resource-author">by <?= htmlspecialchars($r['author']) ?></div>
                     </div>
                     <div class="resource-footer">
                         <div class="status-indicator">
-                            <span class="status-dot <?= $r['status'] === 'available' ? 'dot-available' : 'dot-borrowed' ?>"></span>
+                            <span class="status-dot <?= $r['status'] === 'available' ? 'dot-available' : ($r['status'] === 'pending' ? 'dot-pending' : 'dot-borrowed') ?>"></span>
                             <?= ucfirst($r['status']) ?>
                         </div>
-                        <button class="btn btn-sm btn-outline-primary rounded-pill px-3 fw-600">View Details</button>
+                        <button class="btn btn-sm btn-outline-primary rounded-pill px-3 fw-600" 
+                                onclick="viewDetails(<?= htmlspecialchars(json_encode($r), ENT_QUOTES, 'UTF-8') ?>)">
+                            View Details
+                        </button>
                     </div>
                 </div>
             </div>
@@ -139,11 +147,103 @@ $search_type  = $_GET['type'] ?? '';
     </main>
 </div>
 
+<!-- Resource Details Modal -->
+<div class="modal fade" id="resourceDetailsModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-4">
+            <div class="modal-header border-0 pb-0">
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4 pt-0">
+                <div class="text-center mb-4">
+                    <div id="modalCoverContainer" class="mb-3 mx-auto shadow-sm rounded-3" style="width: 140px; height: 190px; background: #f8fafc; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                        <i class="bi bi-journal-text fs-1 text-muted" id="modalDefaultIcon"></i>
+                        <img src="" id="modalCoverImg" class="w-100 h-100 object-fit-cover d-none">
+                    </div>
+                    <h5 class="fw-800 mb-1" id="modalTitle"></h5>
+                    <p class="text-muted mb-2" id="modalAuthor"></p>
+                    <div id="modalStatusBadge"></div>
+                </div>
+
+                <div class="mb-4">
+                    <h6 class="fw-700">Description</h6>
+                    <p class="text-muted small mb-0" id="modalDescription"></p>
+                </div>
+
+                <div class="row g-2" id="modalActions">
+                    <div class="col-6" id="borrowAction"></div>
+                    <div class="col-6" id="readAction"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     function toggleSidebar() {
         document.getElementById('sidebar').classList.toggle('open');
         document.getElementById('sidebarOverlay').classList.toggle('show');
+    }
+
+    const resourceModal = new bootstrap.Modal(document.getElementById('resourceDetailsModal'));
+
+    function viewDetails(resource) {
+        document.getElementById('modalTitle').textContent = resource.title;
+        document.getElementById('modalAuthor').textContent = 'by ' + resource.author;
+        document.getElementById('modalDescription').textContent = resource.description || 'No description provided for this material.';
+        
+        // Handle Cover Image
+        const coverImg = document.getElementById('modalCoverImg');
+        const defaultIcon = document.getElementById('modalDefaultIcon');
+        if (resource.cover_image) {
+            coverImg.src = resource.cover_image;
+            coverImg.classList.remove('d-none');
+            defaultIcon.classList.add('d-none');
+        } else {
+            coverImg.classList.add('d-none');
+            defaultIcon.classList.remove('d-none');
+        }
+
+        const statusBadge = document.getElementById('modalStatusBadge');
+        const borrowAction = document.getElementById('borrowAction');
+        const readAction = document.getElementById('readAction');
+        
+        // Handle Borrow Button
+        if (resource.status === 'available') {
+            statusBadge.innerHTML = '<span class="badge bg-success-subtle text-success rounded-pill px-3">Available</span>';
+            borrowAction.innerHTML = `
+                <a href="/library_system/index.php?action=student_borrow&id=${resource.id}" class="btn btn-primary w-100 rounded-pill py-2 fw-700">
+                    <i class="bi bi-bookmark-plus me-2"></i> Borrow
+                </a>`;
+        } else if (resource.status === 'pending') {
+            statusBadge.innerHTML = '<span class="badge bg-info-subtle text-info rounded-pill px-3">Pending Approval</span>';
+            borrowAction.innerHTML = `
+                <button class="btn btn-info w-100 rounded-pill py-2 fw-700 text-white" disabled>
+                    <i class="bi bi-clock me-2"></i> Requested
+                </button>`;
+        } else {
+            statusBadge.innerHTML = '<span class="badge bg-warning-subtle text-warning rounded-pill px-3">Borrowed</span>';
+            borrowAction.innerHTML = `
+                <button class="btn btn-secondary w-100 rounded-pill py-2 fw-700" disabled>
+                    <i class="bi bi-lock-fill me-2"></i> Unavailable
+                </button>`;
+        }
+
+        // Handle Read Button (if PDF)
+        if (resource.file_path && resource.file_path.toLowerCase().endsWith('.pdf')) {
+            readAction.innerHTML = `
+                <a href="${resource.file_path}" target="_blank" class="btn btn-success w-100 rounded-pill py-2 fw-700">
+                    <i class="bi bi-eye me-2"></i> Read Online
+                </a>`;
+        } else {
+            readAction.innerHTML = `
+                <button class="btn btn-light w-100 rounded-pill py-2 fw-700 text-muted" disabled>
+                    <i class="bi bi-file-earmark-x me-2"></i> No Digital Copy
+                </button>`;
+        }
+        
+        resourceModal.show();
     }
 </script>
 </body>

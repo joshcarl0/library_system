@@ -24,6 +24,9 @@
         <a href="/library_system/index.php?action=admin_manage_resources" class="menu-item <?= ($current_action === 'admin_manage_resources') ? 'active' : '' ?>" id="nav-resources">
             <i class="bi bi-journal-bookmark-fill"></i> Manage Resources
         </a>
+        <a href="/library_system/index.php?action=admin_manage_requests" class="menu-item <?= ($current_action === 'admin_manage_requests') ? 'active' : '' ?>" id="nav-requests">
+            <i class="bi bi-clipboard-check-fill"></i> Borrow Requests
+        </a>
         <a href="/library_system/index.php?action=admin_upload_materials" class="menu-item <?= ($current_action === 'admin_upload_materials') ? 'active' : '' ?>" id="nav-upload">
             <i class="bi bi-cloud-arrow-up-fill"></i> Upload Materials
         </a>

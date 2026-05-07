@@ -27,6 +27,9 @@ $current_action = $_GET['action'] ?? 'faculty_dashboard';
         <a href="/library_system/index.php?action=faculty_my_uploads" class="menu-item <?= ($current_action === 'faculty_my_uploads') ? 'active' : '' ?>">
             <i class="bi bi-journal-text"></i> My Uploads
         </a>
+        <a href="/library_system/index.php?action=faculty_notifications" class="menu-item <?= ($current_action === 'faculty_notifications') ? 'active' : '' ?>">
+            <i class="bi bi-bell-fill"></i> Notifications
+        </a>
 
         <div class="menu-label">Account</div>
         <a href="/library_system/index.php?action=faculty_profile" class="menu-item <?= ($current_action === 'faculty_profile') ? 'active' : '' ?>">

@@ -9,6 +9,10 @@
         ? scriptTag.dataset.apiUrl
         : '/library_system/index.php?action=api_get_notifications';
 
+    const PAGE_URL = (scriptTag && scriptTag.dataset.pageUrl)
+        ? scriptTag.dataset.pageUrl
+        : '/library_system/index.php?action=student_notifications';
+
     const NOTIF_DOT   = document.getElementById('notif-dot');
     const NOTIF_COUNT = document.getElementById('notif-count');
     const NOTIF_LIST  = document.getElementById('notif-list');
@@ -64,7 +68,7 @@
                             const timeStr = formatTime(notif.created_at);
 
                             html += `
-                                <a href="/library_system/index.php?action=student_notifications" class="notification-item ${isUnread}">
+                                <a href="${PAGE_URL}" class="notification-item ${isUnread}">
                                     <div class="ni-icon ${rnColor}">
                                         <i class="bi ${rnIcon}"></i>
                                     </div>

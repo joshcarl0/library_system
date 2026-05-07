@@ -58,7 +58,7 @@
                     </thead>
                     <tbody>
                         <?php foreach($borrowed as $item): 
-                            $borrow_date = new DateTime($item['action_date']);
+                            $borrow_date = new DateTime($item['created_at']);
                             
                             // Use DB due_date if available, otherwise fallback to +7 days
                             if (!empty($item['due_date'])) {
@@ -97,12 +97,21 @@
                                 </div>
                             </td>
                             <td>
-                                <span class="status-badge <?= $is_overdue ? 'status-overdue' : 'status-borrowed' ?>">
-                                    <?= $is_overdue ? 'Overdue' : 'Active Loan' ?>
-                                </span>
+                                <?php if ($item['action'] === 'Pending'): ?>
+                                    <span class="status-badge bg-warning-subtle text-warning">
+                                        Pending Approval
+                                    </span>
+                                <?php else: ?>
+                                    <span class="status-badge <?= $is_overdue ? 'status-overdue' : 'status-borrowed' ?>">
+                                        <?= $is_overdue ? 'Overdue' : 'Active Loan' ?>
+                                    </span>
+                                <?php endif; ?>
                             </td>
                             <td>
-                                <button class="btn btn-sm btn-light rounded-pill px-3 fw-600">Details</button>
+                                <button class="btn btn-sm btn-light rounded-pill px-3 fw-600"
+                                        onclick="viewDetails(<?= htmlspecialchars(json_encode($item), ENT_QUOTES, 'UTF-8') ?>)">
+                                    Details
+                                </button>
                             </td>
                         </tr>
                         <?php endforeach; ?>
@@ -115,11 +124,88 @@
     </main>
 </div>
 
+<!-- Resource Details Modal -->
+<div class="modal fade" id="resourceDetailsModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-4">
+            <div class="modal-header border-0 pb-0">
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4 pt-0">
+                <div class="text-center mb-4">
+                    <div id="modalCoverContainer" class="mb-3 mx-auto shadow-sm rounded-3" style="width: 140px; height: 190px; background: #f8fafc; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                        <i class="bi bi-journal-text fs-1 text-muted" id="modalDefaultIcon"></i>
+                        <img src="" id="modalCoverImg" class="w-100 h-100 object-fit-cover d-none">
+                    </div>
+                    <h5 class="fw-800 mb-1" id="modalTitle"></h5>
+                    <p class="text-muted mb-2" id="modalAuthor"></p>
+                    <div id="modalStatusBadge"></div>
+                </div>
+
+                <div class="mb-4">
+                    <h6 class="fw-700">Description</h6>
+                    <p class="text-muted small mb-0" id="modalDescription"></p>
+                </div>
+
+                <div class="row g-2" id="modalActions">
+                    <div class="col-12" id="readAction"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     function toggleSidebar() {
         document.getElementById('sidebar').classList.toggle('open');
         document.getElementById('sidebarOverlay').classList.toggle('show');
+    }
+
+    const resourceModal = new bootstrap.Modal(document.getElementById('resourceDetailsModal'));
+
+    function viewDetails(item) {
+        document.getElementById('modalTitle').textContent = item.title;
+        document.getElementById('modalAuthor').textContent = 'by ' + item.author;
+        document.getElementById('modalDescription').textContent = item.description || 'No description provided for this material.';
+        
+        // Handle Cover Image
+        const coverImg = document.getElementById('modalCoverImg');
+        const defaultIcon = document.getElementById('modalDefaultIcon');
+        if (item.cover_image) {
+            coverImg.src = item.cover_image;
+            coverImg.classList.remove('d-none');
+            defaultIcon.classList.add('d-none');
+        } else {
+            coverImg.classList.add('d-none');
+            defaultIcon.classList.remove('d-none');
+        }
+
+        const statusBadge = document.getElementById('modalStatusBadge');
+        const readAction = document.getElementById('readAction');
+        
+        // Status Badge
+        if (item.action === 'Pending') {
+            statusBadge.innerHTML = '<span class="badge bg-warning-subtle text-warning rounded-pill px-3">Pending Approval</span>';
+            readAction.innerHTML = '<button class="btn btn-light w-100 rounded-pill py-2 fw-700 text-muted" disabled><i class="bi bi-clock me-2"></i> Waiting for Admin</button>';
+        } else {
+            statusBadge.innerHTML = '<span class="badge bg-success-subtle text-success rounded-pill px-3">Borrowed</span>';
+            
+            // Handle Read Button (if PDF)
+            if (item.file_path && item.file_path.toLowerCase().endsWith('.pdf')) {
+                readAction.innerHTML = `
+                    <a href="${item.file_path}" target="_blank" class="btn btn-success w-100 rounded-pill py-2 fw-700">
+                        <i class="bi bi-eye me-2"></i> Read Online
+                    </a>`;
+            } else {
+                readAction.innerHTML = `
+                    <button class="btn btn-light w-100 rounded-pill py-2 fw-700 text-muted" disabled>
+                        <i class="bi bi-file-earmark-x me-2"></i> No Digital Copy
+                    </button>`;
+            }
+        }
+        
+        resourceModal.show();
     }
 </script>
 </body>

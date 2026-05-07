@@ -98,6 +98,18 @@ class Resources
     }
 
     /**
+     * Count resources by type (e.g. E-Book, Book).
+     */
+    public function countByType(string $type): int
+    {
+        $row = $this->db->fetchOne(
+            "SELECT COUNT(*) AS total FROM resources WHERE type = :type",
+            ['type' => $type]
+        );
+        return (int) ($row['total'] ?? 0);
+    }
+
+    /**
      * Get all distinct categories.
      */
     public function getCategories(): array
@@ -119,6 +131,7 @@ class Resources
         $description = trim($data['description'] ?? '');
         $status      = $data['status'] ?? 'available';
         $filePath    = $data['file_path'] ?? null;
+        $coverImage  = $data['cover_image'] ?? null;
         $uploadedBy  = $data['uploaded_by'] ?? null;
 
         if (empty($title) || empty($author)) {
@@ -127,8 +140,8 @@ class Resources
 
         try {
             $this->db->execute(
-                "INSERT INTO resources (title, author, subject, category, type, description, status, file_path, uploaded_by, created_at)
-                 VALUES (:title, :author, :subject, :category, :type, :description, :status, :file_path, :uploaded_by, NOW())",
+                "INSERT INTO resources (title, author, subject, category, type, description, status, file_path, cover_image, uploaded_by, created_at)
+                 VALUES (:title, :author, :subject, :category, :type, :description, :status, :file_path, :cover_image, :uploaded_by, NOW())",
                 [
                     'title'       => $title,
                     'author'      => $author,
@@ -138,6 +151,7 @@ class Resources
                     'description' => $description,
                     'status'      => $status,
                     'file_path'   => $filePath,
+                    'cover_image' => $coverImage,
                     'uploaded_by' => $uploadedBy
                 ]
             );
@@ -163,6 +177,7 @@ class Resources
         $status      = in_array($data['status'] ?? '', ['available', 'borrowed', 'unavailable'])
                        ? $data['status'] : 'available';
         $file_path   = trim($data['file_path'] ?? '');
+        $cover_image = trim($data['cover_image'] ?? '');
 
         if (empty($title) || empty($author)) {
             return ['success' => false, 'message' => 'Title and Author are required.'];
@@ -173,9 +188,9 @@ class Resources
                 "UPDATE resources
                  SET title = :title, author = :author, subject = :subject,
                      category = :category, type = :type, description = :description,
-                     status = :status, file_path = :file_path
+                     status = :status, file_path = :file_path, cover_image = :cover_image
                  WHERE id = :id",
-                compact('title', 'author', 'subject', 'category', 'type', 'description', 'status', 'file_path', 'id')
+                compact('title', 'author', 'subject', 'category', 'type', 'description', 'status', 'file_path', 'cover_image', 'id')
             );
             return ['success' => true, 'message' => 'Resource updated successfully.'];
         } catch (\PDOException $e) {
@@ -203,5 +218,16 @@ class Resources
             error_log('Resource delete failed: ' . $e->getMessage());
             return ['success' => false, 'message' => 'Failed to delete resource.'];
         }
+    }
+
+    /**
+     * Update resource status.
+     */
+    public function updateStatus(int $id, string $status): bool
+    {
+        return $this->db->execute(
+            "UPDATE resources SET status = :status WHERE id = :id",
+            ['status' => $status, 'id' => $id]
+        ) > 0;
     }
 }

@@ -218,6 +218,7 @@
         document.getElementById('edit_category').value   = resource.category ?? '';
         document.getElementById('edit_description').value= resource.description ?? '';
         document.getElementById('edit_file_path').value  = resource.file_path ?? '';
+        document.getElementById('edit_cover_image').value = resource.cover_image ?? '';
         document.getElementById('edit_type').value        = resource.type;
         document.getElementById('edit_status').value      = resource.status;
         new bootstrap.Modal(document.getElementById('editModal')).show();

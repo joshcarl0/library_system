@@ -88,8 +88,12 @@
             <div class="col-sm-6 col-md-4 col-xl-3">
                 <div class="resource-card-student">
                     <div class="resource-thumb">
-                        <i class="bi bi-journal-text"></i>
-                        <span class="type-badge"><?= htmlspecialchars($r['resource_type']) ?></span>
+                        <?php if (!empty($r['cover_image'])): ?>
+                            <img src="<?= htmlspecialchars($r['cover_image']) ?>" alt="Cover" class="w-100 h-100 object-fit-cover rounded-3">
+                        <?php else: ?>
+                            <i class="bi bi-journal-text"></i>
+                        <?php endif; ?>
+                        <span class="type-badge"><?= htmlspecialchars($r['type'] ?? 'Material') ?></span>
                     </div>
                     <div class="resource-body">
                         <div class="resource-category"><?= htmlspecialchars($r['category_name'] ?? 'General') ?></div>
@@ -101,12 +105,65 @@
                             <span class="status-dot <?= $r['status'] === 'available' ? 'dot-available' : 'dot-borrowed' ?>"></span>
                             <?= ucfirst($r['status']) ?>
                         </div>
-                        <a href="#" class="btn btn-sm btn-outline-primary rounded-pill px-3 fw-600">View</a>
+                        <button type="button" 
+                                class="btn btn-sm btn-outline-primary rounded-pill px-3 fw-600"
+                                onclick='viewDetails(<?= json_encode($r) ?>)'>
+                            View
+                        </button>
                     </div>
                 </div>
             </div>
             <?php endforeach; ?>
             <?php endif; ?>
+        </div>
+
+        <!-- Resource Details Modal -->
+        <div class="modal fade" id="resourceModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
+                    <div class="modal-header border-0 pb-0">
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body p-4 pt-0">
+                        <div class="text-center mb-4">
+                            <div class="d-inline-flex align-items-center justify-content-center bg-primary-subtle text-primary rounded-4 mb-3" style="width: 70px; height: 70px; font-size: 2rem;">
+                                <i class="bi bi-book"></i>
+                            </div>
+                            <h4 class="fw-800 mb-1" id="modalTitle">Resource Title</h4>
+                            <p class="text-muted" id="modalAuthor">by Author Name</p>
+                        </div>
+                        
+                        <div class="row g-3 mb-4">
+                            <div class="col-6">
+                                <div class="p-3 bg-light rounded-3">
+                                    <small class="text-muted d-block mb-1">Category</small>
+                                    <span class="fw-600" id="modalCategory">General</span>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="p-3 bg-light rounded-3">
+                                    <small class="text-muted d-block mb-1">Status</small>
+                                    <span id="modalStatusBadge">Available</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <h6 class="fw-700">Description</h6>
+                            <p class="text-muted small mb-0" id="modalDescription">No description available.</p>
+                        </div>
+
+                        <div class="row g-2" id="modalActions">
+                            <div class="col-6" id="borrowAction">
+                                <!-- Borrow button will be injected here -->
+                            </div>
+                            <div class="col-6" id="readAction">
+                                <!-- Read button will be injected here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
     </main>
@@ -117,6 +174,49 @@
     function toggleSidebar() {
         document.getElementById('sidebar').classList.toggle('open');
         document.getElementById('sidebarOverlay').classList.toggle('show');
+    }
+
+    const resourceModal = new bootstrap.Modal(document.getElementById('resourceModal'));
+
+    function viewDetails(resource) {
+        document.getElementById('modalTitle').textContent = resource.title;
+        document.getElementById('modalAuthor').textContent = 'by ' + resource.author;
+        document.getElementById('modalCategory').textContent = resource.category_name || resource.category || 'General';
+        document.getElementById('modalDescription').textContent = resource.description || 'No description provided for this material.';
+        
+        const statusBadge = document.getElementById('modalStatusBadge');
+        const borrowAction = document.getElementById('borrowAction');
+        const readAction = document.getElementById('readAction');
+        
+        // Handle Borrow Button
+        if (resource.status === 'available') {
+            statusBadge.innerHTML = '<span class="badge bg-success-subtle text-success rounded-pill px-3">Available</span>';
+            borrowAction.innerHTML = `
+                <a href="/library_system/index.php?action=student_borrow&id=${resource.id}" class="btn btn-primary w-100 rounded-pill py-2 fw-700">
+                    <i class="bi bi-bookmark-plus me-2"></i> Borrow
+                </a>`;
+        } else {
+            statusBadge.innerHTML = '<span class="badge bg-warning-subtle text-warning rounded-pill px-3">Borrowed</span>';
+            borrowAction.innerHTML = `
+                <button class="btn btn-secondary w-100 rounded-pill py-2 fw-700" disabled>
+                    <i class="bi bi-lock-fill me-2"></i> Unavailable
+                </button>`;
+        }
+
+        // Handle Read Button (if PDF)
+        if (resource.file_path && resource.file_path.toLowerCase().endsWith('.pdf')) {
+            readAction.innerHTML = `
+                <a href="${resource.file_path}" target="_blank" class="btn btn-success w-100 rounded-pill py-2 fw-700">
+                    <i class="bi bi-eye me-2"></i> Read Online
+                </a>`;
+        } else {
+            readAction.innerHTML = `
+                <button class="btn btn-light w-100 rounded-pill py-2 fw-700 text-muted" disabled>
+                    <i class="bi bi-file-earmark-x me-2"></i> No Digital Copy
+                </button>`;
+        }
+        
+        resourceModal.show();
     }
 </script>
 </body>

@@ -64,4 +64,21 @@ class Notification
             ['user_id' => $userId]
         ) >= 0;
     }
+
+    /**
+     * Create a new notification.
+     */
+    public function create(int $userId, string $title, string $message, string $type = 'system'): bool
+    {
+        return $this->db->execute(
+            "INSERT INTO notifications (user_id, title, message, type, is_read, created_at)
+             VALUES (:user_id, :title, :message, :type, 0, NOW())",
+            [
+                'user_id' => $userId,
+                'title'   => $title,
+                'message' => $message,
+                'type'    => $type
+            ]
+        ) > 0;
+    }
 }

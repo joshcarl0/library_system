@@ -83,4 +83,6 @@ $recentNotifs = array_slice($recentNotifs, 0, 5);
     </div>
 </header>
 
-<script src="/library_system/assets/js/notifications.js"></script>
+<script src="/library_system/assets/js/notifications.js"
+        data-api-url="/library_system/index.php?action=api_get_notifications"
+        data-page-url="/library_system/index.php?action=student_notifications"></script>

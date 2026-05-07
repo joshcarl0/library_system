@@ -1,3 +1,14 @@
+<?php
+/**
+ * @var array $stats
+ * @var array $recentResources
+ * @var array $recentUsers
+ */
+// Initialize variables if not set to prevent warnings
+$stats = $stats ?? ['total_resources' => 0, 'total_users' => 0, 'active_borrows' => 0, 'digital_files' => 0];
+$recentResources = $recentResources ?? [];
+$recentUsers = $recentUsers ?? [];
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -55,8 +66,8 @@
                     </div>
                     <div class="scn-info">
                         <span class="scn-label">Total Resources</span>
-                        <h3 class="scn-value">0</h3>
-                        <span class="scn-trend text-success"><i class="bi bi-graph-up"></i> 0 this month</span>
+                        <h3 class="scn-value"><?= $stats['total_resources'] ?></h3>
+                        <span class="scn-trend text-success"><i class="bi bi-journal-check"></i> Overall resources</span>
                     </div>
                 </div>
             </div>
@@ -67,8 +78,8 @@
                     </div>
                     <div class="scn-info">
                         <span class="scn-label">Registered Users</span>
-                        <h3 class="scn-value">0</h3>
-                        <span class="scn-trend text-warning"><i class="bi bi-person-plus"></i> 0 new today</span>
+                        <h3 class="scn-value"><?= $stats['total_users'] ?></h3>
+                        <span class="scn-trend text-warning"><i class="bi bi-person-check"></i> Total accounts</span>
                     </div>
                 </div>
             </div>
@@ -79,8 +90,8 @@
                     </div>
                     <div class="scn-info">
                         <span class="scn-label">Active Borrows</span>
-                        <h3 class="scn-value">0</h3>
-                        <span class="scn-trend text-primary"><i class="bi bi-clock-history"></i> 0 today</span>
+                        <h3 class="scn-value"><?= $stats['active_borrows'] ?></h3>
+                        <span class="scn-trend text-primary"><i class="bi bi-clock-history"></i> Current logs</span>
                     </div>
                 </div>
             </div>
@@ -91,8 +102,8 @@
                     </div>
                     <div class="scn-info">
                         <span class="scn-label">Digital Files</span>
-                        <h3 class="scn-value">0</h3>
-                        <span class="scn-trend text-danger"><i class="bi bi-cloud-check"></i> 0 uploaded</span>
+                        <h3 class="scn-value"><?= $stats['digital_files'] ?></h3>
+                        <span class="scn-trend text-danger"><i class="bi bi-file-earmark-pdf"></i> E-Books</span>
                     </div>
                 </div>
             </div>
@@ -159,12 +170,25 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td colspan="6" class="text-center py-5" style="color: var(--text-muted-oc);">
-                                <i class="bi bi-journal-x" style="font-size:2rem; display:block; margin-bottom:8px; opacity:0.4;"></i>
-                                No resources added yet.
-                            </td>
-                        </tr>
+                        <?php if (!empty($recentResources)): ?>
+                            <?php foreach ($recentResources as $res): ?>
+                                <tr>
+                                    <td><div class="fw-600"><?= htmlspecialchars($res['title']) ?></div></td>
+                                    <td><?= htmlspecialchars($res['author']) ?></td>
+                                    <td><span class="badge bg-light text-dark border"><?= htmlspecialchars($res['category']) ?></span></td>
+                                    <td><?= htmlspecialchars($res['type']) ?></td>
+                                    <td><span class="status-pill <?= $res['status'] ?>"><?= ucfirst($res['status']) ?></span></td>
+                                    <td><?= date('M d, Y', strtotime($res['created_at'])) ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <tr>
+                                <td colspan="6" class="text-center py-5" style="color: var(--text-muted-oc);">
+                                    <i class="bi bi-journal-x" style="font-size:2rem; display:block; margin-bottom:8px; opacity:0.4;"></i>
+                                    No resources added yet.
+                                </td>
+                            </tr>
+                        <?php endif; ?>
                     </tbody>
                 </table>
             </div>
@@ -189,12 +213,24 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td colspan="5" class="text-center py-5" style="color: var(--text-muted-oc);">
-                                <i class="bi bi-person-x" style="font-size:2rem; display:block; margin-bottom:8px; opacity:0.4;"></i>
-                                No registered users yet.
-                            </td>
-                        </tr>
+                        <?php if (!empty($recentUsers)): ?>
+                            <?php foreach ($recentUsers as $ru): ?>
+                                <tr>
+                                    <td><div class="fw-600"><?= htmlspecialchars($ru['fullname']) ?></div></td>
+                                    <td><?= htmlspecialchars($ru['student_id'] ?: 'N/A') ?></td>
+                                    <td><?= htmlspecialchars($ru['email']) ?></td>
+                                    <td><span class="badge <?= ($ru['role'] === 'admin') ? 'bg-danger' : (($ru['role'] === 'faculty') ? 'bg-success' : 'bg-primary') ?>"><?= ucfirst($ru['role']) ?></span></td>
+                                    <td><?= date('M d, Y', strtotime($ru['created_at'])) ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <tr>
+                                <td colspan="5" class="text-center py-5" style="color: var(--text-muted-oc);">
+                                    <i class="bi bi-person-x" style="font-size:2rem; display:block; margin-bottom:8px; opacity:0.4;"></i>
+                                    No registered users yet.
+                                </td>
+                            </tr>
+                        <?php endif; ?>
                     </tbody>
                 </table>
             </div>

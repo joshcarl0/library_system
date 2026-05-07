@@ -526,8 +526,7 @@ class Users
     private function recordFailedAttempt(?int $userId, string $ip): void
     {
         $this->db->execute(
-            "INSERT INTO login_attempts (user_id, ip_address, attempted_at)
-             VALUES (:user_id, :ip, NOW())",
+            "INSERT INTO login_attempts (user_id, ip_address, attempted_at) VALUES (:user_id, :ip, NOW())",
             ['user_id' => $userId, 'ip' => $ip]
         );
     }
@@ -627,8 +626,7 @@ class Users
     private function clearFailedAttempts(int $userId, string $ip): void
     {
         $this->db->execute(
-            "DELETE FROM login_attempts
-             WHERE user_id = :user_id OR ip_address = :ip",
+            "DELETE FROM login_attempts WHERE user_id = :user_id OR ip_address = :ip",
             ['user_id' => $userId, 'ip' => $ip]
         );
     }

@@ -105,6 +105,13 @@
                             </select>
                         </div>
 
+                        <!-- Cover Image -->
+                        <div class="col-md-6">
+                            <label class="modal-label">Cover Image (Optional)</label>
+                            <input type="file" name="cover_image" class="modal-input" accept="image/*">
+                            <small class="text-muted">JPG, PNG or WebP</small>
+                        </div>
+
                         <!-- Description -->
                         <div class="col-12">
                             <label class="modal-label">Description / Abstract</label>

@@ -3,18 +3,24 @@
 require_once __DIR__ . '/../models/Users.php';
 require_once __DIR__ . '/../models/Resources.php';
 require_once __DIR__ . '/../models/Category.php';
+require_once __DIR__ . '/../models/ResourceLog.php';
+require_once __DIR__ . '/../models/Notification.php';
 
 class AdminController
 {
     private Users     $userModel;
-    private Resources $resourceModel;
-    private Category  $categoryModel;
+    private Resources    $resourceModel;
+    private Category     $categoryModel;
+    private ResourceLog  $resourceLogModel;
+    private Notification $notificationModel;
 
     public function __construct()
     {
-        $this->userModel     = new Users();
-        $this->resourceModel = new Resources();
-        $this->categoryModel = new Category();
+        $this->userModel         = new Users();
+        $this->resourceModel     = new Resources();
+        $this->categoryModel     = new Category();
+        $this->resourceLogModel  = new ResourceLog();
+        $this->notificationModel = new Notification();
     }
 
     // ════════════════════════════════════════════════════════
@@ -24,7 +30,23 @@ class AdminController
     public function dashboard(): void
     {
         Users::requireRole('admin', '/library_system/index.php?action=login');
-        require_once __DIR__ . '/../../../views/admin/admin_dashboard.php';
+
+        // Fetch Stats
+        $stats = [
+            'total_resources' => $this->resourceModel->countAll(),
+            'total_users'     => $this->userModel->countAll(),
+            'active_borrows'  => 0, // Placeholder for now, can be linked to ResourceLog
+            'digital_files'   => $this->resourceModel->countByType('E-Book'), // Example filter
+        ];
+
+        // Fetch Recent Data
+        $recentResources = $this->resourceModel->getAll('', '', '', ''); 
+        $recentResources = array_slice($recentResources, 0, 5); // Latest 5
+
+        $recentUsers = $this->userModel->getAllUsers();
+        $recentUsers = array_slice($recentUsers, 0, 5); // Latest 5
+
+        include __DIR__ . '/../../../views/admin/admin_dashboard.php';
     }
 
     public function myProfile(): void
@@ -94,35 +116,45 @@ class AdminController
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Handle File Upload
             $uploadDir = __DIR__ . '/../../../assets/uploads/';
-            if (!is_dir($uploadDir)) {
-                mkdir($uploadDir, 0777, true);
-            }
-
-            $fileName = basename($_FILES['material_file']['name']);
-            $targetFilePath = $uploadDir . $fileName;
-            $fileType = pathinfo($targetFilePath, PATHINFO_EXTENSION);
-
-            // Allow certain file formats
-            $allowTypes = array('pdf', 'doc', 'docx', 'ppt', 'pptx', 'zip', 'txt');
+            $coverDir  = __DIR__ . '/../../../assets/covers/';
             
-            if (in_array(strtolower($fileType), $allowTypes)) {
-                // Upload file to server
-                if (move_uploaded_file($_FILES['material_file']['tmp_name'], $targetFilePath)) {
-                    // Prepare data for database
-                    $data = $_POST;
-                    $data['file_path'] = '/library_system/assets/uploads/' . $fileName;
-                    
-                    $result = $this->resourceModel->create($data);
-                    $message = $result['success'] ? "File uploaded and resource added successfully." : $result['message'];
-                    $msgType = $result['success'] ? 'success' : 'error';
-                } else {
-                    $message = "Sorry, there was an error uploading your file.";
-                    $msgType = "error";
+            if (!is_dir($uploadDir)) mkdir($uploadDir, 0777, true);
+            if (!is_dir($coverDir))  mkdir($coverDir, 0777, true);
+
+            $data = $_POST;
+            $data['uploaded_by'] = $_SESSION['user_id'];
+
+            // 1. Process Material File
+            if (!empty($_FILES['material_file']['name'])) {
+                $fileName = time() . '_' . basename($_FILES['material_file']['name']);
+                $targetFilePath = $uploadDir . $fileName;
+                $fileType = strtolower(pathinfo($targetFilePath, PATHINFO_EXTENSION));
+                $allowTypes = array('pdf', 'doc', 'docx', 'ppt', 'pptx', 'zip', 'txt');
+
+                if (in_array($fileType, $allowTypes)) {
+                    if (move_uploaded_file($_FILES['material_file']['tmp_name'], $targetFilePath)) {
+                        $data['file_path'] = '/library_system/assets/uploads/' . $fileName;
+                    }
                 }
-            } else {
-                $message = "Sorry, only PDF, DOC, PPT, & ZIP files are allowed.";
-                $msgType = "error";
             }
+
+            // 2. Process Cover Image
+            if (!empty($_FILES['cover_image']['name'])) {
+                $imgName = time() . '_' . basename($_FILES['cover_image']['name']);
+                $targetImgPath = $coverDir . $imgName;
+                $imgType = strtolower(pathinfo($targetImgPath, PATHINFO_EXTENSION));
+                $allowImgs = array('jpg', 'jpeg', 'png', 'webp');
+
+                if (in_array($imgType, $allowImgs)) {
+                    if (move_uploaded_file($_FILES['cover_image']['tmp_name'], $targetImgPath)) {
+                        $data['cover_image'] = '/library_system/assets/covers/' . $imgName;
+                    }
+                }
+            }
+            
+            $result = $this->resourceModel->create($data);
+            $message = $result['success'] ? "Resource added successfully." : $result['message'];
+            $msgType = $result['success'] ? 'success' : 'error';
         }
 
         require_once __DIR__ . '/../../../views/admin/upload_materials.php';
@@ -316,6 +348,76 @@ class AdminController
         }
         
         fclose($output);
+        exit;
+    }
+
+    // ════════════════════════════════════════════════════════
+    //  BORROW REQUESTS & RETURNS
+    // ════════════════════════════════════════════════════════
+
+    public function manageRequests(): void
+    {
+        Users::requireRole('admin', '/library_system/index.php?action=login');
+        
+        $pendingRequests = $this->resourceLogModel->getAllLogs('Pending');
+        $activeBorrows   = $this->resourceLogModel->getAllLogs('Borrowed');
+
+        require_once __DIR__ . '/../../../views/admin/manage_requests.php';
+    }
+
+    public function approveRequest(): void
+    {
+        Users::requireRole('admin', '/library_system/index.php?action=login');
+        
+        $logId = (int) ($_GET['id'] ?? 0);
+        $log   = $this->resourceLogModel->findById($logId);
+
+        if ($log && $log['action'] === 'Pending') {
+            $dueDate = date('Y-m-d H:i:s', strtotime('+7 days'));
+            
+            // 1. Update Log to 'Borrowed'
+            $this->resourceLogModel->updateLogAction($logId, 'Borrowed', $dueDate);
+            
+            // 2. Update Resource to 'borrowed'
+            $this->resourceModel->updateStatus($log['resource_id'], 'borrowed');
+            
+            // 3. Notify User
+            $this->notificationModel->create(
+                $log['user_id'],
+                'Borrow Request Approved',
+                "Your request has been approved. Please return it by " . date('M d, Y', strtotime($dueDate)) . ".",
+                'loan'
+            );
+        }
+        
+        header('Location: /library_system/index.php?action=admin_manage_requests&success=Request Approved');
+        exit;
+    }
+
+    public function returnResource(): void
+    {
+        Users::requireRole('admin', '/library_system/index.php?action=login');
+        
+        $logId = (int) ($_GET['id'] ?? 0);
+        $log   = $this->resourceLogModel->findById($logId);
+
+        if ($log && $log['action'] === 'Borrowed') {
+            // 1. Update Log to 'Returned'
+            $this->resourceLogModel->updateLogAction($logId, 'Returned', null, date('Y-m-d H:i:s'));
+            
+            // 2. Update Resource to 'available'
+            $this->resourceModel->updateStatus($log['resource_id'], 'available');
+            
+            // 3. Notify User
+            $this->notificationModel->create(
+                $log['user_id'],
+                'Resource Returned',
+                "Thank you for returning the resource on time.",
+                'system'
+            );
+        }
+        
+        header('Location: /library_system/index.php?action=admin_manage_requests&success=Resource Returned');
         exit;
     }
 }

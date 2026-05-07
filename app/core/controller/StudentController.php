@@ -117,4 +117,45 @@ class StudentController
         ]);
         exit;
     }
+
+    // ════════════════════════════════════════════════════════
+    //  BORROW LOGIC
+    // ════════════════════════════════════════════════════════
+
+    public function borrow(): void
+    {
+        Users::requireLogin('/library_system/index.php?action=login');
+
+        $resourceId = (int) ($_GET['id'] ?? 0);
+        $userId     = $_SESSION['user_id'];
+
+        if ($resourceId <= 0) {
+            header('Location: /library_system/index.php?action=student_dashboard&error=Invalid resource');
+            exit;
+        }
+
+        $resource = $this->resourceModel->getById($resourceId);
+
+        if (!$resource || $resource['status'] !== 'available') {
+            header('Location: /library_system/index.php?action=student_dashboard&error=Resource unavailable');
+            exit;
+        }
+
+        // 1. Update Resource Status to 'pending'
+        $this->resourceModel->updateStatus($resourceId, 'pending');
+
+        // 2. Create Log Entry as 'Pending'
+        $this->resourceLogModel->logAction($userId, $resourceId, 'Pending');
+
+        // 3. Create Notification
+        $this->notificationModel->create(
+            $userId, 
+            'Borrow Request Sent', 
+            "Your request to borrow '{$resource['title']}' has been sent to the admin for approval.",
+            'system'
+        );
+        
+        header('Location: /library_system/index.php?action=student_borrowed&success=Material borrowed successfully');
+        exit;
+    }
 }

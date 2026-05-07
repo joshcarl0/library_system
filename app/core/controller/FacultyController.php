@@ -143,6 +143,23 @@ class FacultyController
     }
 
     // ════════════════════════════════════════════════════════
+    //  NOTIFICATIONS
+    // ════════════════════════════════════════════════════════
+
+    public function notifications(): void
+    {
+        Users::requireRole('faculty', '/library_system/index.php?action=login');
+        
+        $filter = $_GET['filter'] ?? 'all';
+        $notifications = $this->notificationModel->getByUser($_SESSION['user_id'], $filter);
+        
+        // Mark all as read when visiting the notifications page
+        $this->notificationModel->markAllAsRead($_SESSION['user_id']);
+        
+        require_once __DIR__ . '/../../../views/faculty/notification.php';
+    }
+
+    // ════════════════════════════════════════════════════════
     //  NOTIFICATIONS (API endpoint for real-time polling)
     // ════════════════════════════════════════════════════════
 

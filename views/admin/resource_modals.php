@@ -66,7 +66,11 @@
                         </div>
                         <div class="col-12">
                             <label class="modal-label">File Path / URL (for digital files)</label>
-                            <input type="text" name="file_path" class="modal-input" placeholder="e.g. uploads/sample.pdf">
+                            <input type="text" name="file_path" class="modal-input" placeholder="e.g. /library_system/assets/uploads/sample.pdf">
+                        </div>
+                        <div class="col-12">
+                            <label class="modal-label">Cover Image URL (Optional)</label>
+                            <input type="text" name="cover_image" class="modal-input" placeholder="e.g. /library_system/assets/covers/sample.jpg">
                         </div>
                     </div>
                 </div>
@@ -134,6 +138,10 @@
                         <div class="col-12">
                             <label class="modal-label">File Path / URL</label>
                             <input type="text" name="file_path" id="edit_file_path" class="modal-input">
+                        </div>
+                        <div class="col-12">
+                            <label class="modal-label">Cover Image URL</label>
+                            <input type="text" name="cover_image" id="edit_cover_image" class="modal-input">
                         </div>
                     </div>
                 </div>
