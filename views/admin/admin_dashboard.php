@@ -122,7 +122,7 @@ $recentUsers = $recentUsers ?? [];
                 </a>
             </div>
             <div class="col-6 col-md-3">
-                <a href="#" class="quick-action">
+                <a href="/library_system/index.php?action=admin_manage_users" class="quick-action">
                     <i class="bi bi-person-plus-fill"></i>
                     <div class="quick-action-text">
                         <span>Add User</span>
@@ -131,7 +131,7 @@ $recentUsers = $recentUsers ?? [];
                 </a>
             </div>
             <div class="col-6 col-md-3">
-                <a href="#" class="quick-action">
+                <a href="/library_system/index.php?action=admin_usage_reports" class="quick-action">
                     <i class="bi bi-file-earmark-bar-graph-fill"></i>
                     <div class="quick-action-text">
                         <span>View Reports</span>
@@ -140,7 +140,7 @@ $recentUsers = $recentUsers ?? [];
                 </a>
             </div>
             <div class="col-6 col-md-3">
-                <a href="#" class="quick-action">
+                <a href="/library_system/index.php?action=admin_export_data" class="quick-action">
                     <i class="bi bi-download"></i>
                     <div class="quick-action-text">
                         <span>Export Data</span>

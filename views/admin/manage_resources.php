@@ -234,6 +234,52 @@
     // Auto-dismiss alert after 4 seconds
     const alert = document.querySelector('.alert-oc');
     if (alert) setTimeout(() => alert.style.display = 'none', 4000);
+
+    // Live Search & Filter Functionality
+    const searchInput   = document.querySelector('input[name="search"]');
+    const typeSelect     = document.querySelector('select[name="type"]');
+    const statusSelect   = document.querySelector('select[name="status"]');
+    const categorySelect = document.querySelector('select[name="category"]');
+
+    function filterTable() {
+        const searchTerm     = searchInput ? searchInput.value.toLowerCase() : '';
+        const typeTerm       = typeSelect ? typeSelect.value.toLowerCase() : '';
+        const statusTerm     = statusSelect ? statusSelect.value.toLowerCase() : '';
+        const categoryTerm   = categorySelect ? categorySelect.value.toLowerCase() : '';
+        
+        const tableRows = document.querySelectorAll('tbody tr');
+        
+        tableRows.forEach(row => {
+            // Skip empty state row
+            if (row.querySelector('td[colspan]')) return;
+            
+            const textContent = row.textContent.toLowerCase();
+            
+            // Extract values from cells for precise filtering
+            const cells = row.querySelectorAll('td');
+            if (cells.length < 6) return; // Safeguard
+
+            const rowType     = cells[4].textContent.trim().toLowerCase();
+            const rowStatus   = cells[5].textContent.trim().toLowerCase();
+            const rowCategory = cells[3].textContent.toLowerCase();
+
+            const matchesSearch   = textContent.includes(searchTerm);
+            const matchesType     = typeTerm === '' || rowType.includes(typeTerm);
+            const matchesStatus   = statusTerm === '' || rowStatus.includes(statusTerm);
+            const matchesCategory = categoryTerm === '' || rowCategory.includes(categoryTerm);
+
+            if (matchesSearch && matchesType && matchesStatus && matchesCategory) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    }
+
+    if (searchInput)   searchInput.addEventListener('input', filterTable);
+    if (typeSelect)     typeSelect.addEventListener('change', filterTable);
+    if (statusSelect)   statusSelect.addEventListener('change', filterTable);
+    if (categorySelect) categorySelect.addEventListener('change', filterTable);
 </script>
 </body>
 </html>

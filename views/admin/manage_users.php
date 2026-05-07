@@ -238,6 +238,37 @@
     // Auto-dismiss alert
     const alert = document.querySelector('.alert-oc');
     if (alert) setTimeout(() => alert.style.display = 'none', 4000);
+
+    // Live Search & Filter Functionality
+    const searchInput = document.querySelector('input[name="search"]');
+    const roleSelect = document.querySelector('select[name="role"]');
+
+    function filterTable() {
+        const searchTerm = searchInput ? searchInput.value.toLowerCase() : '';
+        const roleTerm = roleSelect ? roleSelect.value.toLowerCase() : '';
+        const tableRows = document.querySelectorAll('tbody tr');
+        
+        tableRows.forEach(row => {
+            // Skip empty state row
+            if (row.querySelector('td[colspan]')) return;
+            
+            const textContent = row.textContent.toLowerCase();
+            const roleBadge = row.querySelector('.user-badge');
+            const rowRole = roleBadge ? roleBadge.textContent.trim().toLowerCase() : '';
+            
+            const matchesSearch = textContent.includes(searchTerm);
+            const matchesRole = roleTerm === '' || rowRole === roleTerm;
+
+            if (matchesSearch && matchesRole) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    }
+
+    if (searchInput) searchInput.addEventListener('input', filterTable);
+    if (roleSelect) roleSelect.addEventListener('change', filterTable);
 </script>
 </body>
 </html>

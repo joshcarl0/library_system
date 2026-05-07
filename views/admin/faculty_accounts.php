@@ -208,6 +208,27 @@
     // Auto-dismiss alert
     const alert = document.querySelector('.alert-oc');
     if (alert) setTimeout(() => alert.style.display = 'none', 4000);
+
+    // Live Search Functionality
+    const searchInput = document.querySelector('input[name="search"]');
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            const tableRows = document.querySelectorAll('tbody tr');
+            
+            tableRows.forEach(row => {
+                // Skip empty state row
+                if (row.querySelector('td[colspan]')) return;
+                
+                const textContent = row.textContent.toLowerCase();
+                if (textContent.includes(searchTerm)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+    }
 </script>
 </body>
 </html>

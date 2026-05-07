@@ -245,6 +245,42 @@ $search_type  = $_GET['type'] ?? '';
         
         resourceModal.show();
     }
+
+    // Live Search & Filter Functionality for Cards
+    const searchInput   = document.querySelector('input[name="query"]');
+    const categorySelect = document.querySelector('select[name="category"]');
+    const typeSelect     = document.querySelector('select[name="type"]');
+
+    function filterCards() {
+        const searchTerm   = searchInput ? searchInput.value.toLowerCase() : '';
+        const categoryTerm = categorySelect ? categorySelect.value.toLowerCase() : '';
+        const typeTerm     = typeSelect ? typeSelect.value.toLowerCase() : '';
+        
+        const cards = document.querySelectorAll('.col-sm-6.col-md-4.col-xl-3');
+        
+        cards.forEach(cardContainer => {
+            const card = cardContainer.querySelector('.resource-card-student');
+            if (!card) return;
+            
+            const textContent    = card.textContent.toLowerCase();
+            const cardCategory   = card.querySelector('.resource-category') ? card.querySelector('.resource-category').textContent.toLowerCase() : '';
+            const cardTypeBadge  = card.querySelector('.type-badge') ? card.querySelector('.type-badge').textContent.toLowerCase() : '';
+
+            const matchesSearch   = textContent.includes(searchTerm);
+            const matchesCategory = categoryTerm === '' || cardCategory.includes(categoryTerm);
+            const matchesType     = typeTerm === '' || cardTypeBadge.includes(typeTerm);
+
+            if (matchesSearch && matchesCategory && matchesType) {
+                cardContainer.style.display = '';
+            } else {
+                cardContainer.style.display = 'none';
+            }
+        });
+    }
+
+    if (searchInput)   searchInput.addEventListener('input', filterCards);
+    if (categorySelect) categorySelect.addEventListener('change', filterCards);
+    if (typeSelect)     typeSelect.addEventListener('change', filterCards);
 </script>
 </body>
 </html>
