@@ -79,9 +79,6 @@ switch ($action) {
         $adminController->manageResources();
         break;
 
-    case 'admin_upload_materials':
-        $adminController->uploadMaterials();
-        break;
 
     case 'admin_manage_categories':
         $adminController->manageCategories();
@@ -95,13 +92,6 @@ switch ($action) {
         $adminController->facultyAccounts();
         break;
 
-    case 'admin_usage_reports':
-        $adminController->usageReports();
-        break;
-
-    case 'admin_export_data':
-        $adminController->exportData();
-        break;
 
     case 'admin_manage_requests':
         $adminController->manageRequests();
@@ -153,13 +143,6 @@ switch ($action) {
         $facultyController->dashboard();
         break;
 
-    case 'faculty_upload':
-        $facultyController->uploadMaterials();
-        break;
-
-    case 'faculty_my_uploads':
-        $facultyController->myUploads();
-        break;
 
     case 'faculty_notifications':
         $facultyController->notifications();

@@ -21,12 +21,6 @@ $current_action = $_GET['action'] ?? 'faculty_dashboard';
         <a href="/library_system/index.php?action=faculty_dashboard" class="menu-item <?= ($current_action === 'faculty_dashboard') ? 'active' : '' ?>">
             <i class="bi bi-grid-1x2-fill"></i> Dashboard
         </a>
-        <a href="/library_system/index.php?action=faculty_upload" class="menu-item <?= ($current_action === 'faculty_upload') ? 'active' : '' ?>">
-            <i class="bi bi-cloud-upload-fill"></i> Upload Materials
-        </a>
-        <a href="/library_system/index.php?action=faculty_my_uploads" class="menu-item <?= ($current_action === 'faculty_my_uploads') ? 'active' : '' ?>">
-            <i class="bi bi-journal-text"></i> My Uploads
-        </a>
         <a href="/library_system/index.php?action=faculty_notifications" class="menu-item <?= ($current_action === 'faculty_notifications') ? 'active' : '' ?>">
             <i class="bi bi-bell-fill"></i> Notifications
         </a>

@@ -76,7 +76,6 @@
                         <option value="">All Types</option>
                         <option value="book"     <?= ($type ?? '') === 'book'     ? 'selected' : '' ?>>Book</option>
                         <option value="module"   <?= ($type ?? '') === 'module'   ? 'selected' : '' ?>>Module</option>
-                        <option value="digital"  <?= ($type ?? '') === 'digital'  ? 'selected' : '' ?>>Digital File</option>
                         <option value="journal"  <?= ($type ?? '') === 'journal'  ? 'selected' : '' ?>>Journal</option>
                         <option value="thesis"   <?= ($type ?? '') === 'thesis'   ? 'selected' : '' ?>>Thesis</option>
                     </select>
@@ -156,7 +155,7 @@
                             </td>
                             <td>
                                 <?php
-                                $typeIcons = ['book'=>'bi-book','module'=>'bi-file-text','digital'=>'bi-file-earmark-pdf','journal'=>'bi-journal-text','thesis'=>'bi-mortarboard'];
+                                $typeIcons = ['book'=>'bi-book','module'=>'bi-file-text','journal'=>'bi-journal-text','thesis'=>'bi-mortarboard'];
                                 $icon = $typeIcons[$r['type']] ?? 'bi-file';
                                 ?>
                                 <span style="font-size:0.82rem;"><i class="bi <?= $icon ?> me-1"></i><?= ucfirst(htmlspecialchars($r['type'], ENT_QUOTES, 'UTF-8')) ?></span>
@@ -217,8 +216,6 @@
         document.getElementById('edit_subject').value     = resource.subject ?? '';
         document.getElementById('edit_category').value   = resource.category ?? '';
         document.getElementById('edit_description').value= resource.description ?? '';
-        document.getElementById('edit_file_path').value  = resource.file_path ?? '';
-        document.getElementById('edit_cover_image').value = resource.cover_image ?? '';
         document.getElementById('edit_type').value        = resource.type;
         document.getElementById('edit_status').value      = resource.status;
         new bootstrap.Modal(document.getElementById('editModal')).show();

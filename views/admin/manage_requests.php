@@ -68,8 +68,13 @@
 
         <!-- ── Pending Requests ── -->
         <div class="mb-5">
-            <h5 class="fw-700 mb-3"><i class="bi bi-clock-history me-2 text-warning"></i> Pending Approval</h5>
-            <div class="row g-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="fw-700 mb-0"><i class="bi bi-clock-history me-2 text-warning"></i> Pending Approval</h5>
+                <div style="width: 280px;">
+                    <input type="text" id="searchPending" class="form-control" placeholder="🔍 Search user or resource..." style="border-radius:10px; font-size:0.85rem;">
+                </div>
+            </div>
+            <div class="row g-4" id="pendingGrid">
                 <?php if (empty($pendingRequests)): ?>
                     <div class="col-12 text-center py-5 text-muted bg-white rounded-4 border">
                         <i class="bi bi-inbox fs-1 d-block mb-2"></i> No pending requests.
@@ -102,10 +107,15 @@
 
         <!-- ── Active Borrows (Returning) ── -->
         <div>
-            <h5 class="fw-700 mb-3"><i class="bi bi-journal-check me-2 text-success"></i> Active Borrows</h5>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="fw-700 mb-0"><i class="bi bi-journal-check me-2 text-success"></i> Active Borrows</h5>
+                <div style="width: 280px;">
+                    <input type="text" id="searchActive" class="form-control" placeholder="🔍 Search user or resource..." style="border-radius:10px; font-size:0.85rem;">
+                </div>
+            </div>
             <div class="content-card">
                 <div class="table-responsive">
-                    <table class="table table-hover align-middle mb-0">
+                    <table class="table table-hover align-middle mb-0" id="activeBorrowsTable">
                         <thead class="bg-light">
                             <tr>
                                 <th class="border-0">User</th>
@@ -157,6 +167,34 @@
         document.getElementById('sidebar').classList.toggle('open');
         document.getElementById('sidebarOverlay').classList.toggle('show');
     }
+
+    // ── Live Search: Pending Requests (cards) ──
+    const searchPending = document.getElementById('searchPending');
+    if (searchPending) {
+        searchPending.addEventListener('input', function () {
+            const term = this.value.toLowerCase();
+            document.querySelectorAll('#pendingGrid .col-md-6').forEach(card => {
+                const text = card.textContent.toLowerCase();
+                card.style.display = text.includes(term) ? '' : 'none';
+            });
+        });
+    }
+
+    // ── Live Search: Active Borrows (table rows) ──
+    const searchActive = document.getElementById('searchActive');
+    if (searchActive) {
+        searchActive.addEventListener('input', function () {
+            const term = this.value.toLowerCase();
+            document.querySelectorAll('#activeBorrowsTable tbody tr').forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(term) ? '' : 'none';
+            });
+        });
+    }
+
+    // Auto-dismiss success alert
+    const alertEl = document.querySelector('.alert-success');
+    if (alertEl) setTimeout(() => alertEl.style.display = 'none', 4000);
 </script>
 </body>
 </html>

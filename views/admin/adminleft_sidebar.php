@@ -27,9 +27,6 @@
         <a href="/library_system/index.php?action=admin_manage_requests" class="menu-item <?= ($current_action === 'admin_manage_requests') ? 'active' : '' ?>" id="nav-requests">
             <i class="bi bi-clipboard-check-fill"></i> Borrow Requests
         </a>
-        <a href="/library_system/index.php?action=admin_upload_materials" class="menu-item <?= ($current_action === 'admin_upload_materials') ? 'active' : '' ?>" id="nav-upload">
-            <i class="bi bi-cloud-arrow-up-fill"></i> Upload Materials
-        </a>
         <a href="/library_system/index.php?action=admin_manage_categories" class="menu-item <?= ($current_action === 'admin_manage_categories') ? 'active' : '' ?>" id="nav-categories">
             <i class="bi bi-tags-fill"></i> Categories
         </a>
@@ -42,13 +39,6 @@
             <i class="bi bi-mortarboard-fill"></i> Faculty Accounts
         </a>
 
-        <div class="menu-label">Reports</div>
-        <a href="/library_system/index.php?action=admin_usage_reports" class="menu-item <?= ($current_action === 'admin_usage_reports') ? 'active' : '' ?>" id="nav-reports">
-            <i class="bi bi-bar-chart-line-fill"></i> Usage Reports
-        </a>
-        <a href="/library_system/index.php?action=admin_export_data" class="menu-item <?= ($current_action === 'admin_export_data') ? 'active' : '' ?>" id="nav-export">
-            <i class="bi bi-download"></i> Export Data
-        </a>
     </nav>
 
     <div class="sidebar-footer">

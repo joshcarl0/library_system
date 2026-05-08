@@ -42,11 +42,11 @@
                     <h1>Good Day, <?= htmlspecialchars(explode(' ', $_SESSION['fullname'] ?? 'Faculty')[0]) ?>! 👋</h1>
                     <p>Manage and share your learning materials with students at Olivarez College.</p>
                     <div class="banner-actions">
-                        <a href="/library_system/index.php?action=faculty_upload" class="btn-faculty-gold">
-                            <i class="bi bi-cloud-upload-fill"></i> Upload New Material
+                        <a href="/library_system/index.php?action=faculty_dashboard" class="btn-faculty-gold">
+                            <i class="bi bi-speedometer2"></i> View Dashboard
                         </a>
-                        <a href="/library_system/index.php?action=faculty_my_uploads" class="btn-faculty-outline">
-                            <i class="bi bi-journal-text"></i> View My Uploads
+                        <a href="/library_system/index.php?action=faculty_notifications" class="btn-faculty-outline">
+                            <i class="bi bi-bell"></i> View Notifications
                         </a>
                     </div>
                 </div>
@@ -56,19 +56,7 @@
 
         <!-- ── Stat Cards ── -->
         <div class="row g-4 mb-4">
-            <div class="col-sm-6 col-xl-3">
-                <div class="stat-card-faculty">
-                    <div class="scf-icon bg-success-subtle text-success">
-                        <i class="bi bi-cloud-check-fill"></i>
-                    </div>
-                    <div class="scf-info">
-                        <span class="scf-label">My Uploads</span>
-                        <h3 class="scf-value"><?= $stats['my_uploads'] ?? 0 ?></h3>
-                        <span class="scf-trend text-success"><i class="bi bi-file-earmark-plus"></i> Total materials</span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-6 col-xl-3">
+            <div class="col-sm-6 col-xl-4">
                 <div class="stat-card-faculty">
                     <div class="scf-icon bg-primary-subtle text-primary">
                         <i class="bi bi-journal-bookmark-fill"></i>
@@ -80,7 +68,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-sm-6 col-xl-3">
+            <div class="col-sm-6 col-xl-4">
                 <div class="stat-card-faculty">
                     <div class="scf-icon bg-warning-subtle text-warning">
                         <i class="bi bi-box-arrow-in-down"></i>
@@ -92,7 +80,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-sm-6 col-xl-3">
+            <div class="col-sm-6 col-xl-4">
                 <div class="stat-card-faculty">
                     <div class="scf-icon bg-danger-subtle text-danger">
                         <i class="bi bi-people-fill"></i>
@@ -109,25 +97,7 @@
         <!-- ── Quick Actions ── -->
         <div class="section-title">Quick Actions</div>
         <div class="row g-3 mb-4">
-            <div class="col-6 col-md-3">
-                <a href="/library_system/index.php?action=faculty_upload" class="quick-action-faculty">
-                    <div class="qaf-icon"><i class="bi bi-cloud-upload-fill"></i></div>
-                    <div class="qaf-text">
-                        <span class="qaf-title">Upload Material</span>
-                        <span class="qaf-sub">Add a new resource</span>
-                    </div>
-                </a>
-            </div>
-            <div class="col-6 col-md-3">
-                <a href="/library_system/index.php?action=faculty_my_uploads" class="quick-action-faculty">
-                    <div class="qaf-icon"><i class="bi bi-journal-text"></i></div>
-                    <div class="qaf-text">
-                        <span class="qaf-title">My Uploads</span>
-                        <span class="qaf-sub">Manage your files</span>
-                    </div>
-                </a>
-            </div>
-            <div class="col-6 col-md-3">
+            <div class="col-4">
                 <a href="/library_system/index.php?action=faculty_notifications" class="quick-action-faculty">
                     <div class="qaf-icon"><i class="bi bi-bell-fill"></i></div>
                     <div class="qaf-text">
@@ -136,12 +106,21 @@
                     </div>
                 </a>
             </div>
-            <div class="col-6 col-md-3">
+            <div class="col-4">
                 <a href="/library_system/index.php?action=faculty_profile" class="quick-action-faculty">
                     <div class="qaf-icon"><i class="bi bi-person-fill"></i></div>
                     <div class="qaf-text">
                         <span class="qaf-title">My Profile</span>
                         <span class="qaf-sub">Account settings</span>
+                    </div>
+                </a>
+            </div>
+            <div class="col-4">
+                <a href="/library_system/index.php?action=logout" class="quick-action-faculty">
+                    <div class="qaf-icon text-danger"><i class="bi bi-box-arrow-left"></i></div>
+                    <div class="qaf-text">
+                        <span class="qaf-title text-danger">Log Out</span>
+                        <span class="qaf-sub">End your session</span>
                     </div>
                 </a>
             </div>
@@ -152,7 +131,7 @@
         <div class="content-card-faculty">
             <div class="cfc-header">
                 <h3><i class="bi bi-journal-bookmark me-2" style="color: var(--oc-gold);"></i>Latest Materials in the System</h3>
-                <a href="/library_system/index.php?action=faculty_upload" class="btn-view-all-faculty">Upload New</a>
+                <a href="/library_system/index.php?action=faculty_dashboard" class="btn-view-all-faculty">Refresh List</a>
             </div>
             <div class="table-responsive">
                 <table class="table-faculty">

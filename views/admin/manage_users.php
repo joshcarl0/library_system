@@ -50,6 +50,9 @@
         <!-- Page Header -->
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div class="section-title mb-0">System Users</div>
+            <button class="btn btn-oc-primary" onclick="openAddUserModal()">
+                <i class="bi bi-person-plus-fill me-2"></i> Add User
+            </button>
         </div>
 
         <!-- Filters & Search -->
@@ -147,6 +150,56 @@
     </main>
 </div>
 
+<!-- Add User Modal -->
+<div class="modal fade" id="addUserModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header modal-header-oc">
+                <h5 class="modal-title fw-700">Add New User</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form action="/library_system/index.php?action=admin_manage_users" method="POST">
+                <div class="modal-body p-4">
+                    <input type="hidden" name="form_action" value="add">
+                    
+                    <div class="mb-3">
+                        <label class="modal-label">ID Number</label>
+                        <input type="text" name="student_id" class="modal-input" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="modal-label">Full Name</label>
+                        <input type="text" name="fullname" class="modal-input" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="modal-label">Email Address</label>
+                        <input type="email" name="email" class="modal-input" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="modal-label">Password</label>
+                        <input type="password" name="password" class="modal-input" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="modal-label">User Role</label>
+                        <select name="role" class="modal-input" style="appearance: auto;">
+                            <option value="student">Student</option>
+                            <option value="faculty">Faculty</option>
+                            <option value="admin">Administrator</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer modal-footer-oc bg-light">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn-oc-primary">Add User</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <!-- Edit User Modal -->
 <div class="modal fade" id="editUserModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
@@ -216,6 +269,10 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
+    function openAddUserModal() {
+        new bootstrap.Modal(document.getElementById('addUserModal')).show();
+    }
+
     function toggleSidebar() {
         document.getElementById('sidebar').classList.toggle('open');
         document.getElementById('sidebarOverlay').classList.toggle('show');

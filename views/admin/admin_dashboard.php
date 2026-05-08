@@ -5,7 +5,7 @@
  * @var array $recentUsers
  */
 // Initialize variables if not set to prevent warnings
-$stats = $stats ?? ['total_resources' => 0, 'total_users' => 0, 'active_borrows' => 0, 'digital_files' => 0];
+$stats = $stats ?? ['total_resources' => 0, 'total_users' => 0, 'active_borrows' => 0];
 $recentResources = $recentResources ?? [];
 $recentUsers = $recentUsers ?? [];
 ?>
@@ -95,18 +95,6 @@ $recentUsers = $recentUsers ?? [];
                     </div>
                 </div>
             </div>
-            <div class="col-md-6 col-xl-3">
-                <div class="stat-card-new">
-                    <div class="scn-icon bg-danger-subtle text-danger">
-                        <i class="bi bi-file-earmark-pdf-fill"></i>
-                    </div>
-                    <div class="scn-info">
-                        <span class="scn-label">Digital Files</span>
-                        <h3 class="scn-value"><?= $stats['digital_files'] ?></h3>
-                        <span class="scn-trend text-danger"><i class="bi bi-file-earmark-pdf"></i> E-Books</span>
-                    </div>
-                </div>
-            </div>
         </div>
 
         <!-- ── Quick Actions ── -->
@@ -127,24 +115,6 @@ $recentUsers = $recentUsers ?? [];
                     <div class="quick-action-text">
                         <span>Add User</span>
                         <small>Create a new account</small>
-                    </div>
-                </a>
-            </div>
-            <div class="col-6 col-md-3">
-                <a href="/library_system/index.php?action=admin_usage_reports" class="quick-action">
-                    <i class="bi bi-file-earmark-bar-graph-fill"></i>
-                    <div class="quick-action-text">
-                        <span>View Reports</span>
-                        <small>Usage statistics</small>
-                    </div>
-                </a>
-            </div>
-            <div class="col-6 col-md-3">
-                <a href="/library_system/index.php?action=admin_export_data" class="quick-action">
-                    <i class="bi bi-download"></i>
-                    <div class="quick-action-text">
-                        <span>Export Data</span>
-                        <small>Download reports</small>
                     </div>
                 </a>
             </div>

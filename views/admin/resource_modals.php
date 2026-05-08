@@ -47,7 +47,6 @@
                             <select name="type" class="modal-input">
                                 <option value="book">Book</option>
                                 <option value="module">Module</option>
-                                <option value="digital">Digital File</option>
                                 <option value="journal">Journal</option>
                                 <option value="thesis">Thesis</option>
                             </select>
@@ -63,14 +62,6 @@
                         <div class="col-12">
                             <label class="modal-label">Description</label>
                             <textarea name="description" class="modal-input" rows="3" placeholder="Brief description of the resource..."></textarea>
-                        </div>
-                        <div class="col-12">
-                            <label class="modal-label">File Path / URL (for digital files)</label>
-                            <input type="text" name="file_path" class="modal-input" placeholder="e.g. /library_system/assets/uploads/sample.pdf">
-                        </div>
-                        <div class="col-12">
-                            <label class="modal-label">Cover Image URL (Optional)</label>
-                            <input type="text" name="cover_image" class="modal-input" placeholder="e.g. /library_system/assets/covers/sample.jpg">
                         </div>
                     </div>
                 </div>
@@ -118,7 +109,6 @@
                             <select name="type" id="edit_type" class="modal-input">
                                 <option value="book">Book</option>
                                 <option value="module">Module</option>
-                                <option value="digital">Digital File</option>
                                 <option value="journal">Journal</option>
                                 <option value="thesis">Thesis</option>
                             </select>
@@ -134,14 +124,6 @@
                         <div class="col-12">
                             <label class="modal-label">Description</label>
                             <textarea name="description" id="edit_description" class="modal-input" rows="3"></textarea>
-                        </div>
-                        <div class="col-12">
-                            <label class="modal-label">File Path / URL</label>
-                            <input type="text" name="file_path" id="edit_file_path" class="modal-input">
-                        </div>
-                        <div class="col-12">
-                            <label class="modal-label">Cover Image URL</label>
-                            <input type="text" name="cover_image" id="edit_cover_image" class="modal-input">
                         </div>
                     </div>
                 </div>

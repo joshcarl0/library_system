@@ -74,7 +74,7 @@
                             <td>
                                 <div class="book-info">
                                     <div class="book-icon">
-                                        <i class="bi <?= $item['type'] === 'E-Book' ? 'bi-laptop' : 'bi-book' ?>"></i>
+                                        <i class="bi bi-book"></i>
                                     </div>
                                     <div class="book-details">
                                         <span class="book-title"><?= htmlspecialchars($item['title']) ?></span>
@@ -147,9 +147,6 @@
                     <p class="text-muted small mb-0" id="modalDescription"></p>
                 </div>
 
-                <div class="row g-2" id="modalActions">
-                    <div class="col-12" id="readAction"></div>
-                </div>
             </div>
         </div>
     </div>
@@ -182,27 +179,12 @@
         }
 
         const statusBadge = document.getElementById('modalStatusBadge');
-        const readAction = document.getElementById('readAction');
         
         // Status Badge
         if (item.action === 'Pending') {
             statusBadge.innerHTML = '<span class="badge bg-warning-subtle text-warning rounded-pill px-3">Pending Approval</span>';
-            readAction.innerHTML = '<button class="btn btn-light w-100 rounded-pill py-2 fw-700 text-muted" disabled><i class="bi bi-clock me-2"></i> Waiting for Admin</button>';
         } else {
             statusBadge.innerHTML = '<span class="badge bg-success-subtle text-success rounded-pill px-3">Borrowed</span>';
-            
-            // Handle Read Button (if PDF)
-            if (item.file_path && item.file_path.toLowerCase().endsWith('.pdf')) {
-                readAction.innerHTML = `
-                    <a href="${item.file_path}" target="_blank" class="btn btn-success w-100 rounded-pill py-2 fw-700">
-                        <i class="bi bi-eye me-2"></i> Read Online
-                    </a>`;
-            } else {
-                readAction.innerHTML = `
-                    <button class="btn btn-light w-100 rounded-pill py-2 fw-700 text-muted" disabled>
-                        <i class="bi bi-file-earmark-x me-2"></i> No Digital Copy
-                    </button>`;
-            }
         }
         
         resourceModal.show();

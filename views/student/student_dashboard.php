@@ -154,11 +154,8 @@
                         </div>
 
                         <div class="row g-2" id="modalActions">
-                            <div class="col-6" id="borrowAction">
+                            <div class="col-12" id="borrowAction">
                                 <!-- Borrow button will be injected here -->
-                            </div>
-                            <div class="col-6" id="readAction">
-                                <!-- Read button will be injected here -->
                             </div>
                         </div>
                     </div>
@@ -186,7 +183,6 @@
         
         const statusBadge = document.getElementById('modalStatusBadge');
         const borrowAction = document.getElementById('borrowAction');
-        const readAction = document.getElementById('readAction');
         
         // Handle Borrow Button
         if (resource.status === 'available') {
@@ -200,19 +196,6 @@
             borrowAction.innerHTML = `
                 <button class="btn btn-secondary w-100 rounded-pill py-2 fw-700" disabled>
                     <i class="bi bi-lock-fill me-2"></i> Unavailable
-                </button>`;
-        }
-
-        // Handle Read Button (if PDF)
-        if (resource.file_path && resource.file_path.toLowerCase().endsWith('.pdf')) {
-            readAction.innerHTML = `
-                <a href="${resource.file_path}" target="_blank" class="btn btn-success w-100 rounded-pill py-2 fw-700">
-                    <i class="bi bi-eye me-2"></i> Read Online
-                </a>`;
-        } else {
-            readAction.innerHTML = `
-                <button class="btn btn-light w-100 rounded-pill py-2 fw-700 text-muted" disabled>
-                    <i class="bi bi-file-earmark-x me-2"></i> No Digital Copy
                 </button>`;
         }
         

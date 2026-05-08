@@ -34,7 +34,6 @@ class FacultyController
         $resources = $this->resourceModel->getAll('', '', '', '');
 
         $stats = [
-            'my_uploads'      => 0, // Faculty-specific upload count (requires uploaded_by field)
             'total_resources' => $this->resourceModel->countAll(),
             'available'       => $this->resourceModel->countByStatus('available'),
             'total_students'  => $this->userModel->countByRole('student'),
@@ -43,65 +42,6 @@ class FacultyController
         require_once __DIR__ . '/../../../views/faculty/faculty_dashboard.php';
     }
 
-    // ════════════════════════════════════════════════════════
-    //  UPLOAD MATERIALS
-    // ════════════════════════════════════════════════════════
-
-    public function uploadMaterials(): void
-    {
-        Users::requireRole('faculty', '/library_system/index.php?action=login');
-
-        $message = '';
-        $msgType = '';
-
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $uploadDir = __DIR__ . '/../../../assets/uploads/';
-            if (!is_dir($uploadDir)) {
-                mkdir($uploadDir, 0777, true);
-            }
-
-            $fileName       = basename($_FILES['material_file']['name']);
-            $targetFilePath = $uploadDir . $fileName;
-            $fileType       = strtolower(pathinfo($targetFilePath, PATHINFO_EXTENSION));
-            $allowTypes     = ['pdf', 'doc', 'docx', 'ppt', 'pptx', 'zip', 'txt'];
-
-            if (in_array($fileType, $allowTypes)) {
-                if (move_uploaded_file($_FILES['material_file']['tmp_name'], $targetFilePath)) {
-                    $data              = $_POST;
-                    $data['file_path'] = '/library_system/assets/uploads/' . $fileName;
-                    $data['uploaded_by'] = $_SESSION['user_id'];
-                    $result  = $this->resourceModel->create($data);
-                    $message = $result['success'] ? 'File uploaded and resource added successfully.' : $result['message'];
-                    $msgType = $result['success'] ? 'success' : 'error';
-                } else {
-                    $message = 'Sorry, there was an error uploading your file.';
-                    $msgType = 'error';
-                }
-            } else {
-                $message = 'Sorry, only PDF, DOC, PPT, & ZIP files are allowed.';
-                $msgType = 'error';
-            }
-        }
-
-        $categories = $this->categoryModel->getAll();
-        $subjects   = $this->subjectModel->getAll();
-
-        require_once __DIR__ . '/../../../views/faculty/upload_materials.php';
-    }
-
-    // ════════════════════════════════════════════════════════
-    //  MY UPLOADS
-    // ════════════════════════════════════════════════════════
-
-    public function myUploads(): void
-    {
-        Users::requireRole('faculty', '/library_system/index.php?action=login');
-
-        $userId = $_SESSION['user_id'];
-        $myUploads = $this->resourceModel->getByUploader($userId);
-
-        require_once __DIR__ . '/../../../views/faculty/my_uploads.php';
-    }
 
     // ════════════════════════════════════════════════════════
     //  MY PROFILE
