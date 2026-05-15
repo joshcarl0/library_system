@@ -169,10 +169,35 @@
             gap: 0.8rem;
         }
         
+
         .alert-glass.success {
             background: rgba(16, 185, 129, 0.1);
             border: 1px solid rgba(16, 185, 129, 0.2);
             color: #6ee7b7;
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 576px) {
+            body {
+                overflow: auto;
+                padding: 20px;
+                align-items: flex-start;
+            }
+            .auth-card {
+                padding: 2.5rem 1.5rem;
+                margin-top: 20px;
+                margin-bottom: 20px;
+            }
+            .logo-wrap i.bi-shield-lock {
+                font-size: 2.2rem;
+                padding: 15px;
+            }
+            .logo-wrap h1 {
+                font-size: 1.4rem;
+            }
+            .blob {
+                display: none;
+            }
         }
     </style>
 </head>

@@ -229,3 +229,55 @@ body {
     border-color: var(--oc-gold);
     color: var(--oc-green);
 }
+
+/* ─── Mobile Responsive ──────────────── */
+@media (max-width: 991px) {
+    .main-wrapper {
+        margin-left: 0;
+    }
+
+    .page-content {
+        padding: 20px 15px;
+    }
+
+    .welcome-banner {
+        padding: 30px 25px;
+        text-align: center;
+    }
+
+    .welcome-banner h1 {
+        font-size: 1.5rem;
+    }
+
+    .search-hero {
+        margin: 25px auto 0;
+    }
+    
+    .category-pill {
+        padding: 8px 15px;
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .search-hero {
+        flex-direction: column;
+        background: transparent;
+        box-shadow: none;
+        padding: 0;
+        gap: 10px;
+    }
+    .search-hero input {
+        background: #fff;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        width: 100%;
+    }
+    .search-hero button {
+        width: 100%;
+        padding: 12px;
+    }
+    
+    .resource-thumb {
+        height: 150px;
+    }
+}

@@ -78,7 +78,15 @@
                         <i class="bi bi-shield-lock-fill"></i>
                         <h3>Change Password</h3>
                     </div>
-                    <form action="/library_system/index.php?action=change_password" method="POST">
+
+                    <?php if (isset($_SESSION['error'])): ?>
+                        <div class="alert alert-danger py-2 small"><?= $_SESSION['error']; unset($_SESSION['error']); ?></div>
+                    <?php endif; ?>
+                    <?php if (isset($_SESSION['success'])): ?>
+                        <div class="alert alert-success py-2 small"><?= $_SESSION['success']; unset($_SESSION['success']); ?></div>
+                    <?php endif; ?>
+
+                    <form action="/library_system/index.php?action=update_password" method="POST">
                         <div class="form-group-custom">
                             <label for="current_password">Current Password</label>
                             <input type="password" id="current_password" name="current_password" class="form-control" required>

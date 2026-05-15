@@ -61,8 +61,18 @@ switch ($action) {
         $authController->verifyOtp();
         break;
 
+
     case 'reset_password':
         $authController->resetPassword();
+        break;
+
+    case 'verify_registration':
+        $authController->verifyRegistration();
+        break;
+
+    case 'update_password':
+    case 'change_password':
+        $authController->changePassword();
         break;
 
     // ════════════════════════════════════════════════════════
@@ -101,8 +111,21 @@ switch ($action) {
         $adminController->approveRequest();
         break;
 
+    case 'admin_reject_request':
+        $adminController->rejectRequest();
+        break;
+
     case 'admin_return_resource':
         $adminController->returnResource();
+        break;
+
+
+    case 'admin_send_reminders':
+        $adminController->sendReminders();
+        break;
+
+    case 'admin_send_individual_reminder':
+        $adminController->sendIndividualReminder();
         break;
 
     // ════════════════════════════════════════════════════════

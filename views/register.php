@@ -302,8 +302,28 @@
         .terms-text a { color: #D4AF37; text-decoration: none; }
         .terms-text a:hover { text-decoration: underline; }
 
-        @media (max-width: 480px) {
-            .auth-card { padding: 28px 22px; }
+
+        @media (max-width: 576px) {
+            body {
+                overflow: auto;
+                padding: 20px;
+                align-items: flex-start;
+            }
+            .auth-card {
+                padding: 30px 20px 28px;
+                margin-top: 10px;
+                margin-bottom: 20px;
+            }
+            .logo-wrap img {
+                width: 75px;
+                height: 75px;
+            }
+            .logo-wrap h1 {
+                font-size: 1.25rem;
+            }
+            .blob {
+                display: none;
+            }
         }
     </style>
 </head>
@@ -397,23 +417,26 @@
             <!-- Account section -->
             <div class="section-label">Account Details</div>
 
+
             <!-- Email -->
             <div class="mb-3">
-                <label for="email" class="form-label">Email Address</label>
+                <label for="email" class="form-label">College Email Address (for Notifications)</label>
                 <div class="input-group">
-                    <span class="input-group-text"><i class="bi bi-envelope-fill"></i></span>
+                    <span class="input-group-text"><i class="bi bi-envelope-at-fill"></i></span>
                     <input
                         type="email"
                         id="email"
                         name="email"
                         class="form-control"
-                        placeholder="you@email.com"
+                        placeholder="yourname@olivarezcollege.edu.ph"
+                        pattern=".*@olivarezcollege\.edu\.ph$"
+                        title="Must be an @olivarezcollege.edu.ph email address"
                         value="<?= htmlspecialchars($_POST['email'] ?? '', ENT_QUOTES, 'UTF-8') ?>"
                         required
                         autocomplete="email"
                     >
                 </div>
-                <div class="invalid-msg" id="email-err">Please enter a valid email address.</div>
+                <div class="invalid-msg" id="email-err">Please enter a valid @olivarezcollege.edu.ph address.</div>
             </div>
 
             <!-- Password -->
@@ -537,7 +560,7 @@
             const fields = [
                 { id: 'fullname',         errId: 'fullname-err',   check: v => v.trim().length >= 2 },
                 { id: 'student_id',       errId: 'student_id-err', check: v => v.trim().length >= 3 },
-                { id: 'email',            errId: 'email-err',      check: v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) },
+                { id: 'email',            errId: 'email-err',      check: v => /^[^\s@]+@olivarezcollege\.edu\.ph$/i.test(v) },
                 { id: 'reg_password',     errId: 'password-err',   check: v => v.length >= 8 },
             ];
 

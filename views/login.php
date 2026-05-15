@@ -225,6 +225,7 @@
         }
         .bottom-text a:hover { color: #f0d060; }
 
+
         /* ── Alert ── */
         .alert-glass {
             background: rgba(239, 68, 68, 0.18);
@@ -237,6 +238,30 @@
             display: flex;
             align-items: center;
             gap: 8px;
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 576px) {
+            body {
+                overflow: auto;
+                padding: 20px;
+                align-items: flex-start;
+            }
+            .auth-card {
+                padding: 30px 20px 28px;
+                margin-top: 20px;
+                margin-bottom: 20px;
+            }
+            .logo-wrap img {
+                width: 75px;
+                height: 75px;
+            }
+            .logo-wrap h1 {
+                font-size: 1.25rem;
+            }
+            .blob {
+                display: none;
+            }
         }
     </style>
 </head>

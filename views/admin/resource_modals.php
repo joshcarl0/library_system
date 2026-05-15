@@ -4,11 +4,12 @@
  */
 ?>
 
+
 <!-- Datalist for Dynamic SQL Categories -->
 <datalist id="sql_categories">
     <?php foreach ($categories ?? [] as $cat): ?>
-        <?php if (!empty($cat['category'])): ?>
-            <option value="<?= htmlspecialchars($cat['category'], ENT_QUOTES, 'UTF-8') ?>">
+        <?php if (!empty($cat['category_name'])): ?>
+            <option value="<?= htmlspecialchars($cat['category_name'], ENT_QUOTES, 'UTF-8') ?>">
         <?php endif; ?>
     <?php endforeach; ?>
 </datalist>
@@ -21,7 +22,7 @@
                 <h5 class="modal-title fw-700"><i class="bi bi-plus-circle-fill me-2"></i>Add New Resource</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <form method="POST" action="/library_system/index.php?action=admin_manage_resources">
+            <form method="POST" action="/library_system/index.php?action=admin_manage_resources" enctype="multipart/form-data">
                 <input type="hidden" name="form_action" value="add">
                 <div class="modal-body p-4">
                     <div class="row g-3">
@@ -37,12 +38,12 @@
                             <label class="modal-label">Subject</label>
                             <input type="text" name="subject" class="modal-input" placeholder="e.g. Computer Science">
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <label class="modal-label">Category</label>
                             <!-- Connected to SQL Datalist -->
                             <input list="sql_categories" name="category" class="modal-input" placeholder="e.g. IT, Nursing, Education">
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <label class="modal-label">Type</label>
                             <select name="type" class="modal-input">
                                 <option value="book">Book</option>
@@ -51,13 +52,22 @@
                                 <option value="thesis">Thesis</option>
                             </select>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
+                            <label class="modal-label">Stock</label>
+                            <input type="number" name="stock" class="modal-input" value="1" min="0" required>
+                        </div>
+                        <div class="col-md-3">
                             <label class="modal-label">Status</label>
                             <select name="status" class="modal-input">
                                 <option value="available">Available</option>
                                 <option value="borrowed">Borrowed</option>
                                 <option value="unavailable">Unavailable</option>
                             </select>
+                        </div>
+                        <div class="col-12">
+                            <label class="modal-label">Book Cover Image</label>
+                            <input type="file" name="cover_image" class="modal-input" accept="image/*">
+                            <small style="color:var(--text-muted-oc); font-size:0.75rem;">Recommended: 300x450px (JPG/PNG)</small>
                         </div>
                         <div class="col-12">
                             <label class="modal-label">Description</label>
@@ -82,7 +92,7 @@
                 <h5 class="modal-title fw-700"><i class="bi bi-pencil-fill me-2"></i>Edit Resource</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <form method="POST" action="/library_system/index.php?action=admin_manage_resources">
+            <form method="POST" action="/library_system/index.php?action=admin_manage_resources" enctype="multipart/form-data">
                 <input type="hidden" name="form_action" value="edit">
                 <input type="hidden" name="resource_id" id="edit_id">
                 <div class="modal-body p-4">
@@ -99,12 +109,12 @@
                             <label class="modal-label">Subject</label>
                             <input type="text" name="subject" id="edit_subject" class="modal-input">
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <label class="modal-label">Category</label>
                             <!-- Connected to SQL Datalist -->
                             <input list="sql_categories" name="category" id="edit_category" class="modal-input">
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <label class="modal-label">Type</label>
                             <select name="type" id="edit_type" class="modal-input">
                                 <option value="book">Book</option>
@@ -113,13 +123,25 @@
                                 <option value="thesis">Thesis</option>
                             </select>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
+                            <label class="modal-label">Stock</label>
+                            <input type="number" name="stock" id="edit_stock" class="modal-input" min="0" required>
+                        </div>
+                        <div class="col-md-3">
                             <label class="modal-label">Status</label>
                             <select name="status" id="edit_status" class="modal-input">
                                 <option value="available">Available</option>
                                 <option value="borrowed">Borrowed</option>
                                 <option value="unavailable">Unavailable</option>
                             </select>
+                        </div>
+                        <div class="col-12">
+                            <label class="modal-label">Update Book Cover</label>
+                            <input type="file" name="cover_image" class="modal-input" accept="image/*">
+                            <div id="edit_cover_preview_wrap" class="mt-2 d-none">
+                                <img id="edit_cover_preview_img" src="" alt="Current Cover" style="height:80px; border-radius:6px; box-shadow:0 2px 8px rgba(0,0,0,0.1);">
+                                <span style="font-size:0.75rem; color:var(--text-muted-oc); margin-left:10px;">Current Image</span>
+                            </div>
                         </div>
                         <div class="col-12">
                             <label class="modal-label">Description</label>

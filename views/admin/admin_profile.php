@@ -86,6 +86,13 @@
                             Security Settings
                         </div>
                         <div class="card-body-oc">
+                            <?php if (isset($_SESSION['error'])): ?>
+                                <div class="alert alert-danger py-2 small"><?= $_SESSION['error']; unset($_SESSION['error']); ?></div>
+                            <?php endif; ?>
+                            <?php if (isset($_SESSION['success'])): ?>
+                                <div class="alert alert-success py-2 small"><?= $_SESSION['success']; unset($_SESSION['success']); ?></div>
+                            <?php endif; ?>
+
                             <form action="/library_system/index.php?action=update_password" method="POST">
                                 <div class="mb-3">
                                     <label class="form-label small fw-700">Current Password</label>

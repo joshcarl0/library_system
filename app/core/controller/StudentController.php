@@ -141,8 +141,10 @@ class StudentController
             exit;
         }
 
-        // 1. Update Resource Status to 'pending'
-        $this->resourceModel->updateStatus($resourceId, 'pending');
+        // 1. Decrement Stock
+        $newStock = (int)$resource['stock'] - 1;
+        $newStatus = $newStock > 0 ? 'available' : 'unavailable';
+        $this->resourceModel->updateStockAndStatus($resourceId, $newStock, $newStatus);
 
         // 2. Create Log Entry as 'Pending'
         $this->resourceLogModel->logAction($userId, $resourceId, 'Pending');

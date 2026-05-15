@@ -109,6 +109,16 @@ class Users
             );
         }
 
+        // ── 8. Check if Verified ────────────────────────────
+        if (($user['is_verified'] ?? 0) == 0) {
+            return [
+                'success' => false,
+                'message' => 'Please verify your account first. An OTP has been sent to your College Email.',
+                'needs_verification' => true,
+                'user_id' => $user['id']
+            ];
+        }
+
         return ['success' => true, 'user' => $this->sanitizeUser($user)];
     }
 
@@ -136,9 +146,14 @@ class Users
             return ['success' => false, 'message' => 'All fields are required.'];
         }
 
-        // Validate email
+        // Validate email format
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             return ['success' => false, 'message' => 'Invalid email address.'];
+        }
+
+        // Enforce @olivarezcollege.edu.ph domain
+        if (!preg_match('/@olivarezcollege\.edu\.ph$/i', $email)) {
+            return ['success' => false, 'message' => 'Only @olivarezcollege.edu.ph emails are allowed.'];
         }
 
         // Check if email already exists
@@ -157,10 +172,11 @@ class Users
         // Use provided role or default to 'student'
         $role = in_array($data['role'] ?? '', ['student', 'faculty']) ? $data['role'] : 'student';
 
+
         try {
             $this->db->execute(
-                "INSERT INTO users (student_id, fullname, email, password, role, created_at)
-                 VALUES (:student_id, :fullname, :email, :password, :role, NOW())",
+                "INSERT INTO users (student_id, fullname, email, password, role, is_verified, created_at)
+                 VALUES (:student_id, :fullname, :email, :password, :role, 0, NOW())",
                 [
                     'student_id' => $studentId,
                     'fullname'   => $fullname,
@@ -169,7 +185,29 @@ class Users
                     'role'       => $role
                 ]
             );
-            return ['success' => true, 'message' => 'Registration successful! You can now log in.'];
+
+            $userId = (int) $this->db->lastInsertId();
+
+            if ($userId) {
+                // Generate and Send OTP
+                $otp = $this->generateAndSaveOtp($userId);
+                
+
+                require_once __DIR__ . '/../services/EmailService.php';
+                $emailService = new EmailService();
+                $emailService->sendOtp($email, $fullname, $otp); 
+                
+                return [
+                    'success' => true, 
+                    'message' => 'Registration successful! Please check your College Email for the verification code.',
+                    'needs_verification' => true,
+                    'user_id' => $userId
+                ];
+            }
+            
+            return ['success' => false, 'message' => 'Failed to create account.'];
+
+
         } catch (\PDOException $e) {
             error_log('Registration failed: ' . $e->getMessage());
             return ['success' => false, 'message' => 'An error occurred during registration. Please try again later.'];
@@ -317,9 +355,9 @@ class Users
             return ['valid' => false, 'message' => 'Invalid OTP.'];
         }
 
-        // Clear OTP after successful use
+        // Clear OTP and set as verified
         $this->db->execute(
-            "UPDATE users SET otp_code = NULL, otp_expiry = NULL WHERE id = :id",
+            "UPDATE users SET otp_code = NULL, otp_expiry = NULL, is_verified = 1 WHERE id = :id",
             ['id' => $userId]
         );
 
@@ -456,6 +494,10 @@ class Users
 
         if (empty($fullname) || empty($email)) {
             return ['success' => false, 'message' => 'Full name and email are required.'];
+        }
+
+        if (!preg_match('/@olivarezcollege\.edu\.ph$/i', $email)) {
+            return ['success' => false, 'message' => 'Only @olivarezcollege.edu.ph emails are allowed.'];
         }
 
         try {

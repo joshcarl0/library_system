@@ -53,7 +53,7 @@ class ResourceLog
                 FROM resource_logs rl
                 LEFT JOIN resources r ON rl.resource_id = r.id
                 LEFT JOIN users u ON rl.user_id = u.id";
-        
+
         $params = [];
         if (!empty($action)) {
             $sql .= " WHERE rl.action = :action";

@@ -64,13 +64,20 @@
         </div>
         <?php endif; ?>
 
+        <?php if (isset($_GET['error'])): ?>
+        <div class="alert alert-danger border-0 shadow-sm rounded-4 mb-4">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i> <?= htmlspecialchars($_GET['error']) ?>
+        </div>
+        <?php endif; ?>
+
         <div class="section-title mb-4">Manage Borrowing Requests</div>
 
         <!-- ── Pending Requests ── -->
         <div class="mb-5">
-            <div class="d-flex justify-content-between align-items-center mb-3">
+
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3">
                 <h5 class="fw-700 mb-0"><i class="bi bi-clock-history me-2 text-warning"></i> Pending Approval</h5>
-                <div style="width: 280px;">
+                <div class="col-12 col-md-4 mt-2 mt-md-0">
                     <input type="text" id="searchPending" class="form-control" placeholder="🔍 Search user or resource..." style="border-radius:10px; font-size:0.85rem;">
                 </div>
             </div>
@@ -93,10 +100,12 @@
                             <p class="text-muted small mb-3"><i class="bi bi-person me-1"></i> Requested by: <strong><?= htmlspecialchars($req['fullname']) ?></strong> (<?= $req['student_id'] ?>)</p>
                             
                             <div class="d-flex gap-2">
-                                <a href="/library_system/index.php?action=admin_approve_request&id=<?= $req['id'] ?>" class="btn btn-success w-100 rounded-pill fw-600">
+                                <button type="button" class="btn btn-success w-100 rounded-pill fw-600" onclick="openApproveModal(<?= $req['id'] ?>)">
                                     <i class="bi bi-check-lg me-1"></i> Approve
+                                </button>
+                                <a href="/library_system/index.php?action=admin_reject_request&id=<?= $req['id'] ?>" class="btn btn-outline-danger rounded-pill px-3" onclick="return confirm('Are you sure you want to reject this request?');">
+                                    <i class="bi bi-x-lg"></i>
                                 </a>
-                                <button class="btn btn-outline-danger rounded-pill px-3"><i class="bi bi-x-lg"></i></button>
                             </div>
                         </div>
                     </div>
@@ -105,11 +114,17 @@
             </div>
         </div>
 
+
         <!-- ── Active Borrows (Returning) ── -->
         <div>
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h5 class="fw-700 mb-0"><i class="bi bi-journal-check me-2 text-success"></i> Active Borrows</h5>
-                <div style="width: 280px;">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3">
+                <div class="d-flex align-items-center gap-3">
+                    <h5 class="fw-700 mb-0"><i class="bi bi-journal-check me-2 text-success"></i> Active Borrows</h5>
+                    <a href="/library_system/index.php?action=admin_send_reminders" class="btn btn-sm btn-outline-primary rounded-pill px-3 fw-600">
+                        <i class="bi bi-send-fill me-1"></i> Send Due Reminders
+                    </a>
+                </div>
+                <div class="col-12 col-md-4 mt-2 mt-md-0">
                     <input type="text" id="searchActive" class="form-control" placeholder="🔍 Search user or resource..." style="border-radius:10px; font-size:0.85rem;">
                 </div>
             </div>
@@ -138,16 +153,22 @@
                                         <div class="text-muted x-small"><?= $ab['student_id'] ?></div>
                                     </td>
                                     <td><?= htmlspecialchars($ab['title']) ?></td>
-                                    <td class="small"><?= date('M d, Y', strtotime($ab['created_at'])) ?></td>
+                                    <td class="small"><?= date('M d, Y h:i A', strtotime($ab['created_at'])) ?></td>
                                     <td>
                                         <span class="text-danger fw-600 small">
-                                            <?= date('M d, Y', strtotime($ab['due_date'])) ?>
+                                            <?= date('M d, Y h:i A', strtotime($ab['due_date'])) ?>
                                         </span>
                                     </td>
+
                                     <td class="text-center">
-                                        <a href="/library_system/index.php?action=admin_return_resource&id=<?= $ab['id'] ?>" class="btn btn-sm btn-primary rounded-pill px-3 fw-600">
-                                            Mark as Returned
-                                        </a>
+                                        <div class="d-flex gap-2 justify-content-center">
+                                            <a href="/library_system/index.php?action=admin_send_individual_reminder&id=<?= $ab['id'] ?>" class="btn btn-sm btn-outline-primary rounded-pill px-3 fw-600" title="Send Manual Reminder">
+                                                <i class="bi bi-envelope-paper"></i>
+                                            </a>
+                                            <a href="/library_system/index.php?action=admin_return_resource&id=<?= $ab['id'] ?>" class="btn btn-sm btn-primary rounded-pill px-3 fw-600">
+                                                Mark as Returned
+                                            </a>
+                                        </div>
                                     </td>
                                 </tr>
                                 <?php endforeach; ?>
@@ -161,11 +182,47 @@
     </main>
 </div>
 
+<!-- Approve Request Modal -->
+<div class="modal fade" id="approveModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-4">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title fw-800">Approve Borrow Request</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form action="/library_system/index.php?action=admin_approve_request" method="POST">
+                <input type="hidden" name="id" id="approve_log_id" value="">
+                <div class="modal-body p-4 pt-3">
+                    <p class="text-muted small mb-3">Please specify the due date and time for this borrowed resource. The default is set to 7 days from now.</p>
+                    <div class="mb-3">
+                        <label class="form-label fw-600">Due Date</label>
+                        <input type="datetime-local" name="due_date" class="form-control" required value="<?= date('Y-m-d\TH:i', strtotime('+7 days')) ?>">
+                    </div>
+                </div>
+                <div class="modal-footer border-0 pt-0">
+                    <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-success rounded-pill px-4 fw-600">Approve Request</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     function toggleSidebar() {
         document.getElementById('sidebar').classList.toggle('open');
         document.getElementById('sidebarOverlay').classList.toggle('show');
+    }
+
+    let approveModal;
+    document.addEventListener("DOMContentLoaded", function() {
+        approveModal = new bootstrap.Modal(document.getElementById('approveModal'));
+    });
+
+    function openApproveModal(id) {
+        document.getElementById('approve_log_id').value = id;
+        approveModal.show();
     }
 
     // ── Live Search: Pending Requests (cards) ──
@@ -192,9 +249,12 @@
         });
     }
 
-    // Auto-dismiss success alert
+    // Auto-dismiss success and error alerts
     const alertEl = document.querySelector('.alert-success');
     if (alertEl) setTimeout(() => alertEl.style.display = 'none', 4000);
+    
+    const alertErr = document.querySelector('.alert-danger');
+    if (alertErr) setTimeout(() => alertErr.style.display = 'none', 4000);
 </script>
 </body>
 </html>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Forgot Password – Olivarez College</title>
+    <title>Verify Registration – Olivarez College</title>
     <!-- Google Fonts: Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Bootstrap CSS -->
@@ -11,7 +11,6 @@
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <style>
-        /* Shared Styles matching login.php */
         :root {
             --oc-green: #0d3612;
             --oc-gold: #d4af37;
@@ -22,8 +21,6 @@
             --primary-hover: #b8962d;
             --text-main: #f8fafc;
             --text-muted: #cbd5e1;
-            --error-color: #ef4444;
-            --success-color: #10b981;
         }
 
         body {
@@ -34,8 +31,9 @@
             justify-content: center;
             background: linear-gradient(135deg, #051d08 0%, #0d3612 100%);
             color: var(--text-main);
-            overflow: hidden;
+            overflow: auto;
             position: relative;
+            padding: 20px;
         }
 
         /* Animated Background Blobs */
@@ -81,6 +79,12 @@
             max-width: 420px;
             box-shadow: var(--glass-shadow);
             z-index: 1;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         /* Logo Area */
@@ -88,69 +92,56 @@
             text-align: center;
             margin-bottom: 2rem;
         }
-        .logo-wrap img {
-            width: 85px;
-            height: 85px;
-            object-fit: contain;
-            margin-bottom: 1.2rem;
+        .logo-wrap i.bi-envelope-check {
+            font-size: 3rem;
+            color: var(--oc-gold);
+            background: rgba(255,255,255,0.1);
             border-radius: 50%;
-            background: #fff;
-            padding: 8px;
-            border: 3px solid var(--oc-gold);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            display: inline-block;
+            margin-bottom: 1.5rem;
+            border: 2px solid var(--oc-gold);
         }
         .logo-wrap h1 {
             font-size: 1.6rem;
             font-weight: 800;
-            margin-bottom: 0.25rem;
+            margin-bottom: 0.5rem;
             letter-spacing: -0.5px;
-            color: #fff;
         }
         .logo-wrap p {
             color: var(--text-muted);
             font-size: 0.9rem;
             margin-bottom: 0;
+            line-height: 1.5;
             font-weight: 500;
         }
 
         /* Form Inputs */
-        .form-label {
-            font-size: 0.8rem;
-            font-weight: 700;
-            color: var(--text-muted);
-            margin-bottom: 0.6rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+        .otp-input-container {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 2rem;
         }
-
-        .input-group-text {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid var(--glass-border);
-            border-right: none;
-            color: var(--oc-gold);
-            border-radius: 12px 0 0 12px;
-        }
-
         .form-control {
             background: rgba(255,255,255,0.05);
             border: 1px solid var(--glass-border);
-            border-left: none;
             color: var(--text-main);
-            padding: 0.8rem 1rem;
-            font-size: 0.95rem;
-            border-radius: 0 12px 12px 0;
+            padding: 1rem;
+            font-size: 1.8rem;
+            text-align: center;
+            letter-spacing: 5px;
+            font-weight: 800;
+            border-radius: 14px;
+            width: 100%;
         }
 
         .form-control:focus {
             background: rgba(255,255,255,0.1);
             border-color: var(--oc-gold);
             color: var(--text-main);
-            box-shadow: none;
-        }
-
-        .input-group:focus-within .input-group-text {
-            border-color: var(--oc-gold);
-            color: var(--oc-gold);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
         }
 
         /* Button */
@@ -162,7 +153,7 @@
             padding: 0.9rem;
             font-weight: 800;
             width: 100%;
-            margin-top: 1.5rem;
+            margin-top: 1rem;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             text-transform: uppercase;
             letter-spacing: 1px;
@@ -188,67 +179,29 @@
             align-items: center;
             gap: 0.8rem;
         }
-        
-        .alert-glass.success {
-            background: rgba(16, 185, 129, 0.1);
-            border: 1px solid rgba(16, 185, 129, 0.2);
-            color: #6ee7b7;
-        }
 
-        .links-wrap {
-            text-align: center;
-            margin-top: 2rem;
-            font-size: 0.9rem;
-        }
-
-        .links-wrap a {
-            color: var(--text-muted);
-            text-decoration: none;
-            transition: all 0.2s;
-            font-weight: 600;
-        }
-
-
-        .links-wrap a:hover {
-            color: var(--oc-gold);
-        }
-
-        /* ── Responsive ── */
         @media (max-width: 576px) {
-            body {
-                overflow: auto;
-                padding: 20px;
-                align-items: flex-start;
-            }
             .auth-card {
                 padding: 2.5rem 1.5rem;
-                margin-top: 20px;
-                margin-bottom: 20px;
             }
-            .logo-wrap img {
-                width: 75px;
-                height: 75px;
+            .logo-wrap i.bi-envelope-check {
+                font-size: 2.2rem;
+                padding: 15px;
             }
-            .logo-wrap h1 {
-                font-size: 1.4rem;
-            }
-            .blob {
-                display: none;
-            }
+            .blob { display: none; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Animated blobs -->
     <div class="blob blob-1"></div>
     <div class="blob blob-2"></div>
 
     <div class="auth-card">
         <div class="logo-wrap">
-            <img src="/library_system/assets/images/olivarez_logo.png" alt="Olivarez College Logo">
-            <h1>Forgot Password</h1>
-            <p>Enter your registered email address</p>
+            <i class="bi bi-envelope-check"></i>
+            <h1>Verify Your Account</h1>
+            <p>Welcome! We've sent a 6-digit verification code to your College Email. Please enter it to activate your account.</p>
         </div>
 
         <?php if (!empty($error)): ?>
@@ -258,21 +211,18 @@
         </div>
         <?php endif; ?>
 
-        <form action="/library_system/index.php?action=forgot_password" method="POST">
-            <div class="mb-3">
-                <label for="email" class="form-label">Email Address</label>
-                <div class="input-group">
-                    <span class="input-group-text"><i class="bi bi-envelope"></i></span>
-                    <input type="email" id="email" name="email" class="form-control" placeholder="you@email.com" required>
-                </div>
+        <form action="/library_system/index.php?action=verify_registration" method="POST">
+            <div class="mb-4">
+                <input type="text" name="otp" class="form-control" placeholder="000000" maxlength="6" required autocomplete="off" autofocus>
             </div>
 
-            <button type="submit" class="btn btn-primary">Send OTP Code</button>
+            <button type="submit" class="btn btn-primary">Verify & Activate</button>
+            
+            <div class="text-center mt-4">
+                <p class="text-muted small mb-0">Didn't receive the code?</p>
+                <a href="/library_system/index.php?action=login" class="text-decoration-none small fw-bold" style="color: var(--oc-gold);">Back to Login</a>
+            </div>
         </form>
-
-        <div class="links-wrap">
-            <a href="/library_system/index.php?action=login"><i class="bi bi-arrow-left"></i> Back to Login</a>
-        </div>
     </div>
 
 </body>

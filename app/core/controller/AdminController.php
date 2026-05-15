@@ -71,12 +71,33 @@ class AdminController
             $postAction = $_POST['form_action'] ?? '';
 
             if ($postAction === 'add') {
+                // Handle Cover Image Upload
+                if (isset($_FILES['cover_image']) && $_FILES['cover_image']['error'] === UPLOAD_ERR_OK) {
+                    $uploadResult = $this->handleFileUpload($_FILES['cover_image'], 'covers');
+                    if ($uploadResult['success']) {
+                        $_POST['cover_image'] = $uploadResult['path'];
+                    }
+                }
+                
                 $result  = $this->resourceModel->create($_POST);
                 $message = $result['message'];
                 $msgType = $result['success'] ? 'success' : 'error';
 
             } elseif ($postAction === 'edit') {
                 $id      = (int) ($_POST['resource_id'] ?? 0);
+                
+                // Handle Cover Image Upload
+                if (isset($_FILES['cover_image']) && $_FILES['cover_image']['error'] === UPLOAD_ERR_OK) {
+                    $uploadResult = $this->handleFileUpload($_FILES['cover_image'], 'covers');
+                    if ($uploadResult['success']) {
+                        $_POST['cover_image'] = $uploadResult['path'];
+                    }
+                } else {
+                    // Keep old image if not uploading new
+                    $existing = $this->resourceModel->getById($id);
+                    $_POST['cover_image'] = $existing['cover_image'] ?? '';
+                }
+
                 $result  = $this->resourceModel->update($id, $_POST);
                 $message = $result['message'];
                 $msgType = $result['success'] ? 'success' : 'error';
@@ -95,8 +116,9 @@ class AdminController
         $type     = trim($_GET['type'] ?? '');
         $status   = trim($_GET['status'] ?? '');
 
+
         $resources  = $this->resourceModel->getAll($search, $category, $type, $status) ?: [];
-        $categories = $this->resourceModel->getCategories() ?: [];
+        $categories = $this->categoryModel->getAll() ?: [];
 
         require_once __DIR__ . '/../../../views/admin/manage_resources.php';
     }
@@ -224,28 +246,70 @@ class AdminController
     {
         Users::requireRole('admin', '/library_system/index.php?action=login');
         
-        $logId = (int) ($_GET['id'] ?? 0);
+        $logId = (int) ($_REQUEST['id'] ?? 0);
         $log   = $this->resourceLogModel->findById($logId);
 
         if ($log && $log['action'] === 'Pending') {
-            $dueDate = date('Y-m-d H:i:s', strtotime('+7 days'));
+            // Check if a custom due date was provided via POST, otherwise default to +7 days
+            if (!empty($_POST['due_date'])) {
+                $dueDate = date('Y-m-d H:i:s', strtotime($_POST['due_date']));
+            } else {
+                $dueDate = date('Y-m-d H:i:s', strtotime('+7 days'));
+            }
             
             // 1. Update Log to 'Borrowed'
             $this->resourceLogModel->updateLogAction($logId, 'Borrowed', $dueDate);
             
-            // 2. Update Resource to 'borrowed'
-            $this->resourceModel->updateStatus($log['resource_id'], 'borrowed');
+            // Note: Resource stock is already decremented during the 'Pending' request state
+            // so we do not need to update stock or status here.
             
-            // 3. Notify User
-            $this->notificationModel->create(
-                $log['user_id'],
-                'Borrow Request Approved',
-                "Your request has been approved. Please return it by " . date('M d, Y', strtotime($dueDate)) . ".",
-                'loan'
-            );
+            // 3. Notify User (if user exists)
+            $userData = $this->userModel->findById($log['user_id']);
+            if ($userData) {
+                $this->notificationModel->create(
+                    $log['user_id'],
+                    'Borrow Request Approved',
+                    "Your request has been approved. Please return it by " . date('M d, Y', strtotime($dueDate)) . ".",
+                    'loan'
+                );
+            }
         }
         
         header('Location: /library_system/index.php?action=admin_manage_requests&success=Request Approved');
+        exit;
+    }
+
+    public function rejectRequest(): void
+    {
+        Users::requireRole('admin', '/library_system/index.php?action=login');
+        
+        $logId = (int) ($_GET['id'] ?? 0);
+        $log   = $this->resourceLogModel->findById($logId);
+
+        if ($log && $log['action'] === 'Pending') {
+            // 1. Update Log to 'Rejected'
+            $this->resourceLogModel->updateLogAction($logId, 'Rejected');
+            
+            // 2. Increment Stock and Update Status to 'available'
+            $resource = $this->resourceModel->getById($log['resource_id']);
+            if ($resource) {
+                $newStock = (int)$resource['stock'] + 1;
+                $this->resourceModel->updateStockAndStatus($log['resource_id'], $newStock, 'available');
+            }
+            
+            // 3. Notify User (if user exists)
+            $userData = $this->userModel->findById($log['user_id']);
+            if ($userData) {
+                $this->notificationModel->create(
+                    $log['user_id'],
+                    'Borrow Request Rejected',
+                    "Your request to borrow has been rejected by the admin.",
+                    'system'
+                );
+            }
+        }
+        
+        header('Location: /library_system/index.php?action=admin_manage_requests&error=Request Rejected');
         exit;
     }
 
@@ -260,19 +324,117 @@ class AdminController
             // 1. Update Log to 'Returned'
             $this->resourceLogModel->updateLogAction($logId, 'Returned', null, date('Y-m-d H:i:s'));
             
-            // 2. Update Resource to 'available'
-            $this->resourceModel->updateStatus($log['resource_id'], 'available');
+            // 2. Increment Stock and Update Status to 'available'
+            $resource = $this->resourceModel->getById($log['resource_id']);
+            if ($resource) {
+                $newStock = (int)$resource['stock'] + 1;
+                $this->resourceModel->updateStockAndStatus($log['resource_id'], $newStock, 'available');
+            }
             
-            // 3. Notify User
-            $this->notificationModel->create(
-                $log['user_id'],
-                'Resource Returned',
-                "Thank you for returning the resource on time.",
-                'system'
-            );
+            // 3. Notify User (if user exists)
+            $userData = $this->userModel->findById($log['user_id']);
+            if ($userData) {
+                $this->notificationModel->create(
+                    $log['user_id'],
+                    'Resource Returned',
+                    "Thank you for returning the resource on time.",
+                    'system'
+                );
+            }
         }
         
+
         header('Location: /library_system/index.php?action=admin_manage_requests&success=Resource Returned');
         exit;
+    }
+
+    public function sendReminders(): void
+    {
+        Users::requireRole('admin', '/library_system/index.php?action=login');
+        
+        $db = Database::getInstance();
+        require_once __DIR__ . '/../services/EmailService.php';
+        $emailService = new EmailService();
+
+
+        $today = date('Y-m-d');
+        $threeDaysLater = date('Y-m-d', strtotime('+3 days'));
+        
+        $query = "
+            SELECT rl.id, rl.due_date, r.title, u.fullname, u.email 
+            FROM resource_logs rl
+            JOIN resources r ON rl.resource_id = r.id
+            JOIN users u ON rl.user_id = u.id
+            WHERE rl.action = 'Borrowed' 
+              AND rl.return_date IS NULL 
+              AND DATE(rl.due_date) BETWEEN :today AND :threeDays
+        ";
+        $dueSoon = $db->fetchAll($query, [
+            'today'     => $today,
+            'threeDays' => $threeDaysLater
+        ]);
+
+
+        $sent = 0;
+        foreach ($dueSoon as $item) {
+            if (!empty($item['email'])) {
+                if ($emailService->sendDueReminder($item['email'], $item['fullname'], $item['title'], $item['due_date'])) {
+                    $sent++;
+                }
+            }
+        }
+
+
+
+        header('Location: /library_system/index.php?action=admin_manage_requests&success=Sent ' . $sent . ' reminders');
+        exit;
+    }
+
+    public function sendIndividualReminder(): void
+    {
+        Users::requireRole('admin', '/library_system/index.php?action=login');
+        
+        $logId = (int) ($_GET['id'] ?? 0);
+        $db = Database::getInstance();
+        
+        $query = "
+            SELECT rl.id, rl.due_date, r.title, u.fullname, u.email 
+            FROM resource_logs rl
+            JOIN resources r ON rl.resource_id = r.id
+            JOIN users u ON rl.user_id = u.id
+            WHERE rl.id = :id
+        ";
+        $item = $db->fetchOne($query, ['id' => $logId]);
+
+        if ($item && !empty($item['email'])) {
+            require_once __DIR__ . '/../services/EmailService.php';
+            $emailService = new EmailService();
+            
+            if ($emailService->sendDueReminder($item['email'], $item['fullname'], $item['title'], $item['due_date'])) {
+                header('Location: /library_system/index.php?action=admin_manage_requests&success=Manual Reminder Sent');
+                exit;
+            }
+        }
+
+        header('Location: /library_system/index.php?action=admin_manage_requests&error=Failed to send reminder');
+        exit;
+    }
+
+    private function handleFileUpload(array $file, string $subDir): array
+    {
+        $targetDir = __DIR__ . '/../../../assets/uploads/' . $subDir . '/';
+        if (!is_dir($targetDir)) {
+            mkdir($targetDir, 0777, true);
+        }
+
+        $fileName = time() . '_' . basename($file['name']);
+        $targetPath = $targetDir . $fileName;
+        $dbPath = 'assets/uploads/' . $subDir . '/' . $fileName;
+
+        if (move_uploaded_file($file['tmp_name'], $targetPath)) {
+            return ['success' => true, 'path' => $dbPath];
+        }
+
+        return ['success' => false, 'message' => 'Failed to move uploaded file.'];
     }
 }

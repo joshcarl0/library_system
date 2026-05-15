@@ -64,3 +64,16 @@
     border: 1px solid rgba(0,0,0,0.04);
     margin-bottom: 24px;
 }
+
+/* ─── Responsive ─── */
+@media (max-width: 768px) {
+    .category-grid {
+        grid-template-columns: 1fr;
+    }
+    .add-category-card .row > div {
+        margin-bottom: 10px;
+    }
+    .add-category-card button {
+        padding: 12px;
+    }
+}

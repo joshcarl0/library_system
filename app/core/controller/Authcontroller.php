@@ -37,6 +37,12 @@ class AuthController
                 // ── RBAC: Redirect based on role ──────────────
                 $this->redirectByRole($result['user']['role']);
             } else {
+                if (isset($result['needs_verification']) && $result['needs_verification']) {
+                    if (session_status() === PHP_SESSION_NONE) session_start();
+                    $_SESSION['verify_user_id'] = $result['user_id'];
+                    header("Location: /library_system/index.php?action=verify_registration");
+                    exit;
+                }
                 // Pass error to view
                 $error = $result['message'];
             }
@@ -107,6 +113,12 @@ class AuthController
                 ]);
 
                 if ($result['success']) {
+                    if (isset($result['needs_verification']) && $result['needs_verification']) {
+                        if (session_status() === PHP_SESSION_NONE) session_start();
+                        $_SESSION['verify_user_id'] = $result['user_id'];
+                        header("Location: /library_system/index.php?action=verify_registration");
+                        exit;
+                    }
                     // Pass success message to view
                     $success = $result['message'];
                     
@@ -238,6 +250,79 @@ class AuthController
             }
         }
 
+
         require __DIR__ . '/../../../views/reset_password.php';
+    }
+
+    public function verifyRegistration()
+    {
+        $error = '';
+        $success = '';
+
+        if (session_status() === PHP_SESSION_NONE) session_start();
+        $userId = $_SESSION['verify_user_id'] ?? null;
+
+        if (!$userId) {
+            header("Location: /library_system/index.php?action=register");
+            exit;
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $otp = $_POST['otp'] ?? '';
+            $result = $this->usersModel->validateOtp($userId, $otp);
+
+            if ($result['valid']) {
+                // Account is now verified (Users::validateOtp sets is_verified=1)
+                unset($_SESSION['verify_user_id']);
+                header("Location: /library_system/index.php?action=login&verified=success");
+                exit;
+            } else {
+                $error = $result['message'];
+            }
+        }
+
+        require __DIR__ . '/../../../views/verify_registration_otp.php';
+    }
+
+    public function changePassword()
+    {
+        // Ensure user is logged in
+        if (!isset($_SESSION['user_id'])) {
+            header("Location: /library_system/index.php?action=login");
+            exit;
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $userId          = $_SESSION['user_id'];
+            $currentPassword = $_POST['current_password'] ?? '';
+            $newPassword     = $_POST['new_password'] ?? '';
+            $confirmPassword = $_POST['confirm_password'] ?? '';
+
+            // 1. Verify current password
+            $user = $this->usersModel->findById($userId);
+            if (!$user || !password_verify($currentPassword, $user['password'])) {
+                $_SESSION['error'] = "Current password is incorrect.";
+            } 
+            // 2. Validate new password
+            elseif (strlen($newPassword) < 8) {
+                $_SESSION['error'] = "New password must be at least 8 characters.";
+            } elseif ($newPassword !== $confirmPassword) {
+                $_SESSION['error'] = "New passwords do not match.";
+            } 
+            // 3. Update password
+            else {
+                if ($this->usersModel->updatePassword($userId, $newPassword)) {
+                    $_SESSION['success'] = "Password updated successfully.";
+                } else {
+                    $_SESSION['error'] = "Failed to update password. Please try again.";
+                }
+            }
+        }
+
+        // Redirect back to profile based on role
+        $role = $_SESSION['role'] ?? 'student';
+        $redirectAction = ($role === 'admin') ? 'admin_profile' : (($role === 'faculty') ? 'faculty_profile' : 'student_profile');
+        header("Location: /library_system/index.php?action=" . $redirectAction);
+        exit;
     }
 }

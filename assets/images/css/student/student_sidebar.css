@@ -143,3 +143,14 @@
     font-size: 0.7rem;
     color: rgba(255,255,255,0.5);
 }
+
+/* ─── Mobile Responsive Fixes ──────────────── */
+@media (max-width: 991px) {
+    .sidebar {
+        transform: translateX(-100%);
+        z-index: 2000;
+    }
+    .sidebar.open {
+        transform: translateX(0);
+    }
+}

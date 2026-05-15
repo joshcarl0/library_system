@@ -49,20 +49,21 @@ $search_type  = $_GET['type'] ?? '';
                         <label>Search Query</label>
                         <input type="text" name="query" class="form-control" placeholder="Search by title, author, or keywords..." value="<?= htmlspecialchars($search_query) ?>">
                     </div>
+
                     <div class="filter-group">
                         <label>Category</label>
-                        <select name="category" class="form-select">
+                        <select name="category" class="form-select" onchange="this.form.submit()">
                             <option value="">All Categories</option>
                             <?php foreach($categories as $cat): ?>
-                            <option value="<?= htmlspecialchars($cat['category'] ?? '') ?>" <?= ($search_cat == ($cat['category'] ?? '')) ? 'selected' : '' ?>>
-                                <?= htmlspecialchars($cat['category'] ?? '') ?>
+                            <option value="<?= htmlspecialchars($cat['category_name'] ?? '') ?>" <?= ($search_cat == ($cat['category_name'] ?? '')) ? 'selected' : '' ?>>
+                                <?= htmlspecialchars($cat['category_name'] ?? '') ?>
                             </option>
                             <?php endforeach; ?>
                         </select>
                     </div>
                     <div class="filter-group">
                         <label>Resource Type</label>
-                        <select name="type" class="form-select">
+                        <select name="type" class="form-select" onchange="this.form.submit()">
                             <option value="">All Types</option>
                             <option value="book" <?= ($search_type === 'book') ? 'selected' : '' ?>>Book</option>
                             <option value="journal" <?= ($search_type === 'journal') ? 'selected' : '' ?>>Journal</option>
@@ -79,65 +80,69 @@ $search_type  = $_GET['type'] ?? '';
             </form>
         </div>
 
-        <!-- RESULTS INFO -->
-        <div class="results-count">
-            <i class="bi bi-info-circle"></i>
-            Found <strong><?= count($resources) ?></strong> materials for your search.
-        </div>
 
-        <!-- RESULTS GRID -->
-        <div class="row g-4">
-            <?php if (empty($resources)): ?>
-            <div class="col-12">
-                <div class="empty-results">
-                    <i class="bi bi-search-heart"></i>
-                    <h3>No materials found</h3>
-                    <p>We couldn't find any resources matching your criteria. Try adjusting your filters or searching for something else.</p>
-                    <a href="/library_system/index.php?action=student_search" class="btn btn-outline-primary mt-3 rounded-pill">Clear All Filters</a>
+        <!-- RESULTS INFO & GRID -->
+        <?php if (empty($resources)): ?>
+            <div class="results-count mb-3">
+                <i class="bi bi-info-circle"></i>
+                Found <strong>0</strong> materials for your search.
+            </div>
+            <div class="row g-4">
+                <div class="col-12">
+                    <div class="empty-results">
+                        <i class="bi bi-search-heart"></i>
+                        <h3>No materials found</h3>
+                        <p>We couldn't find any resources matching your criteria. Try adjusting your filters or searching for something else.</p>
+                        <a href="/library_system/index.php?action=student_search" class="btn btn-outline-primary mt-3 rounded-pill">Clear All Filters</a>
+                    </div>
                 </div>
             </div>
-            <?php else: ?>
-            <?php foreach($resources as $r): ?>
-            <div class="col-sm-6 col-md-4 col-xl-3">
-                <div class="resource-card-student">
-                    <div class="resource-thumb">
-                        <?php if (!empty($r['cover_image'])): ?>
-                            <img src="<?= htmlspecialchars($r['cover_image']) ?>" alt="Cover" class="w-100 h-100 object-fit-cover rounded-3">
-                        <?php else: ?>
-                            <i class="bi bi-journal-text"></i>
-                        <?php endif; ?>
-                        <span class="type-badge"><?= htmlspecialchars($r['type'] ?? 'Material') ?></span>
-                    </div>
-                    <div class="resource-body">
-                        <div class="resource-category"><?= htmlspecialchars($r['category'] ?? 'General') ?></div>
-                        <div class="resource-title"><?= htmlspecialchars($r['title']) ?></div>
-                        <div class="resource-author">by <?= htmlspecialchars($r['author']) ?></div>
-                    </div>
-                    <div class="resource-footer">
-                        <div class="status-indicator">
-                            <span class="status-dot <?= $r['status'] === 'available' ? 'dot-available' : ($r['status'] === 'pending' ? 'dot-pending' : 'dot-borrowed') ?>"></span>
-                            <?= ucfirst($r['status']) ?>
+        <?php else: ?>
+            <div class="results-count mb-3">
+                <i class="bi bi-info-circle"></i>
+                Found <strong><?= count($resources) ?></strong> materials for your search.
+            </div>
+            <div class="row g-4">
+                <?php foreach($resources as $r): ?>
+                <div class="col-sm-6 col-md-4 col-xl-3">
+                    <div class="resource-card-student">
+                        <div class="resource-thumb">
+                            <?php if (!empty($r['cover_image'])): ?>
+                                <img src="/library_system/<?= htmlspecialchars($r['cover_image']) ?>" alt="Cover" class="w-100 h-100 object-fit-cover rounded-3">
+                            <?php else: ?>
+                                <i class="bi bi-journal-text"></i>
+                            <?php endif; ?>
+                            <span class="type-badge"><?= htmlspecialchars($r['type'] ?? 'Material') ?></span>
                         </div>
-                        <button class="btn btn-sm btn-outline-primary rounded-pill px-3 fw-600" 
-                                onclick="viewDetails(<?= htmlspecialchars(json_encode($r), ENT_QUOTES, 'UTF-8') ?>)">
-                            View Details
-                        </button>
+                        <div class="resource-body">
+                            <div class="resource-category"><?= htmlspecialchars($r['category'] ?? 'General') ?></div>
+                            <div class="resource-title"><?= htmlspecialchars($r['title']) ?></div>
+                            <div class="resource-author">by <?= htmlspecialchars($r['author']) ?></div>
+                        </div>
+                        <div class="resource-footer">
+                            <div class="status-indicator">
+                                <span class="status-dot <?= $r['status'] === 'available' ? 'dot-available' : ($r['status'] === 'pending' ? 'dot-pending' : 'dot-borrowed') ?>"></span>
+                                <?= ucfirst($r['status']) ?> (<?= (int)$r['stock'] ?> left)
+                            </div>
+                            <button class="btn btn-sm btn-outline-primary rounded-pill px-3 fw-600" 
+                                    onclick="viewDetails(<?= htmlspecialchars(json_encode($r), ENT_QUOTES, 'UTF-8') ?>)">
+                                View Details
+                            </button>
+                        </div>
                     </div>
                 </div>
+                <?php endforeach; ?>
             </div>
-            <?php endforeach; ?>
-            <?php endif; ?>
-        </div>
+        <?php endif; ?>
 
-        <!-- PAGINATION (Placeholder) -->
+        <!-- PAGINATION -->
         <?php if (!empty($resources)): ?>
         <div class="pagination-wrap">
             <nav>
                 <ul class="pagination pagination-sm">
                     <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
                     <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                    <li class="page-item disabled"><a class="page-link" href="#">Next</a></li>
                 </ul>
             </nav>
         </div>
@@ -195,7 +200,7 @@ $search_type  = $_GET['type'] ?? '';
         const coverImg = document.getElementById('modalCoverImg');
         const defaultIcon = document.getElementById('modalDefaultIcon');
         if (resource.cover_image) {
-            coverImg.src = resource.cover_image;
+            coverImg.src = '/library_system/' + resource.cover_image;
             coverImg.classList.remove('d-none');
             defaultIcon.classList.add('d-none');
         } else {
@@ -207,8 +212,8 @@ $search_type  = $_GET['type'] ?? '';
         const borrowAction = document.getElementById('borrowAction');
         
         // Handle Borrow Button
-        if (resource.status === 'available') {
-            statusBadge.innerHTML = '<span class="badge bg-success-subtle text-success rounded-pill px-3">Available</span>';
+        if (resource.status === 'available' && parseInt(resource.stock) > 0) {
+            statusBadge.innerHTML = `<span class="badge bg-success-subtle text-success rounded-pill px-3">Available (${resource.stock} left)</span>`;
             borrowAction.innerHTML = `
                 <a href="/library_system/index.php?action=student_borrow&id=${resource.id}" class="btn btn-primary w-100 rounded-pill py-2 fw-700">
                     <i class="bi bi-bookmark-plus me-2"></i> Borrow
@@ -230,41 +235,7 @@ $search_type  = $_GET['type'] ?? '';
         resourceModal.show();
     }
 
-    // Live Search & Filter Functionality for Cards
-    const searchInput   = document.querySelector('input[name="query"]');
-    const categorySelect = document.querySelector('select[name="category"]');
-    const typeSelect     = document.querySelector('select[name="type"]');
-
-    function filterCards() {
-        const searchTerm   = searchInput ? searchInput.value.toLowerCase() : '';
-        const categoryTerm = categorySelect ? categorySelect.value.toLowerCase() : '';
-        const typeTerm     = typeSelect ? typeSelect.value.toLowerCase() : '';
-        
-        const cards = document.querySelectorAll('.col-sm-6.col-md-4.col-xl-3');
-        
-        cards.forEach(cardContainer => {
-            const card = cardContainer.querySelector('.resource-card-student');
-            if (!card) return;
-            
-            const textContent    = card.textContent.toLowerCase();
-            const cardCategory   = card.querySelector('.resource-category') ? card.querySelector('.resource-category').textContent.toLowerCase() : '';
-            const cardTypeBadge  = card.querySelector('.type-badge') ? card.querySelector('.type-badge').textContent.toLowerCase() : '';
-
-            const matchesSearch   = textContent.includes(searchTerm);
-            const matchesCategory = categoryTerm === '' || cardCategory.includes(categoryTerm);
-            const matchesType     = typeTerm === '' || cardTypeBadge.includes(typeTerm);
-
-            if (matchesSearch && matchesCategory && matchesType) {
-                cardContainer.style.display = '';
-            } else {
-                cardContainer.style.display = 'none';
-            }
-        });
-    }
-
-    if (searchInput)   searchInput.addEventListener('input', filterCards);
-    if (categorySelect) categorySelect.addEventListener('change', filterCards);
-    if (typeSelect)     typeSelect.addEventListener('change', filterCards);
+    // No live search needed as we use server-side "Apply Filters" button for better accuracy
 </script>
 </body>
 </html>

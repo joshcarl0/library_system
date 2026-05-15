@@ -113,3 +113,18 @@
     display: flex;
     justify-content: center;
 }
+
+/* ─── Responsive ─── */
+@media (max-width: 991px) {
+    .search-header-box {
+        padding: 20px;
+    }
+    .filter-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    .btn-search-apply {
+        width: 100%;
+        justify-content: center;
+    }
+}

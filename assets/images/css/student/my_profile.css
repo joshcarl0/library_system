@@ -143,3 +143,27 @@
     color: var(--oc-green);
     transform: translateY(-2px);
 }
+
+/* ─── Mobile Responsive ─── */
+@media (max-width: 768px) {
+    .profile-card {
+        padding: 25px;
+    }
+    .profile-header {
+        flex-direction: column;
+        text-align: center;
+        gap: 20px;
+    }
+    .profile-avatar-large {
+        width: 80px;
+        height: 80px;
+        font-size: 2.2rem;
+    }
+    .profile-title-area h2 {
+        font-size: 1.5rem;
+    }
+    .info-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+}

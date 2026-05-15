@@ -4,7 +4,7 @@
    ══════════════════════════════════════════ */
 
 .sidebar {
-    width: var(--sidebar-w);
+    width: 260px; /* Force fixed width so background doesn't collapse on mobile when --sidebar-w is 0 */
     height: 100vh;
     background: linear-gradient(180deg, #0d3612 0%, #051a08 100%);
     display: flex;

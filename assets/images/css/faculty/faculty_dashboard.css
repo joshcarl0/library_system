@@ -392,32 +392,62 @@ body {
     display: block;
 }
 
+
+/* ─── Mobile Responsive Fixes ──────────────── */
 @media (max-width: 991px) {
     .main-wrapper {
         margin-left: 0;
     }
 
     .page-content {
-        padding: 20px;
+        padding: 15px;
     }
 
-    .sidebar {
-        transform: translateX(-100%);
+    .welcome-banner-faculty {
+        padding: 30px 25px;
+        text-align: center;
     }
 
-    .sidebar.open {
-        transform: translateX(0);
+    .banner-content-faculty {
+        flex-direction: column;
+        text-align: center;
     }
 
-    .mobile-toggle {
-        display: block !important;
-    }
-
-    .banner-logo-faculty {
-        display: none;
+    .banner-actions {
+        justify-content: center;
     }
 
     .banner-text-faculty h1 {
-        font-size: 1.4rem;
+        font-size: 1.5rem;
+    }
+    
+    .stat-card-faculty {
+        padding: 18px;
+        gap: 15px;
+    }
+    .scf-value {
+        font-size: 1.5rem;
+    }
+    
+    .quick-action-faculty {
+        padding: 15px;
+        flex-direction: column;
+        text-align: center;
+        gap: 10px;
+    }
+    .qaf-icon {
+        margin: 0 auto;
+    }
+}
+
+@media (max-width: 576px) {
+    .section-title {
+        font-size: 1rem;
+    }
+    .cfc-header {
+        padding: 15px;
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
     }
 }

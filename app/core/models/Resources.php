@@ -34,8 +34,9 @@ class Resources
             $params['search3'] = "%{$search}%";
         }
 
+
         if (!empty($category)) {
-            $sql .= " AND category = :category";
+            $sql .= " AND LOWER(TRIM(category)) = LOWER(TRIM(:category))";
             $params['category'] = $category;
         }
 
@@ -129,7 +130,8 @@ class Resources
         $category    = trim($data['category'] ?? '');
         $type        = trim($data['type'] ?? 'book');
         $description = trim($data['description'] ?? '');
-        $status      = $data['status'] ?? 'available';
+        $stock       = (int) ($data['stock'] ?? 1);
+        $status      = $stock > 0 ? ($data['status'] ?? 'available') : 'unavailable';
         $filePath    = $data['file_path'] ?? null;
         $coverImage  = $data['cover_image'] ?? null;
         $uploadedBy  = $data['uploaded_by'] ?? null;
@@ -140,8 +142,8 @@ class Resources
 
         try {
             $this->db->execute(
-                "INSERT INTO resources (title, author, subject, category, type, description, status, file_path, cover_image, uploaded_by, created_at)
-                 VALUES (:title, :author, :subject, :category, :type, :description, :status, :file_path, :cover_image, :uploaded_by, NOW())",
+                "INSERT INTO resources (title, author, subject, category, type, description, stock, status, file_path, cover_image, uploaded_by, created_at)
+                 VALUES (:title, :author, :subject, :category, :type, :description, :stock, :status, :file_path, :cover_image, :uploaded_by, NOW())",
                 [
                     'title'       => $title,
                     'author'      => $author,
@@ -149,6 +151,7 @@ class Resources
                     'category'    => $category,
                     'type'        => $type,
                     'description' => $description,
+                    'stock'       => $stock,
                     'status'      => $status,
                     'file_path'   => $filePath,
                     'cover_image' => $coverImage,
@@ -174,8 +177,13 @@ class Resources
         $category    = trim($data['category'] ?? '');
         $type        = trim($data['type'] ?? 'book');
         $description = trim($data['description'] ?? '');
+        $stock       = (int) ($data['stock'] ?? 1);
         $status      = in_array($data['status'] ?? '', ['available', 'borrowed', 'unavailable'])
                        ? $data['status'] : 'available';
+        // Auto-set unavailable if stock is 0
+        if ($stock <= 0 && $status === 'available') {
+            $status = 'unavailable';
+        }
         $file_path   = trim($data['file_path'] ?? '');
         $cover_image = trim($data['cover_image'] ?? '');
 
@@ -188,9 +196,9 @@ class Resources
                 "UPDATE resources
                  SET title = :title, author = :author, subject = :subject,
                      category = :category, type = :type, description = :description,
-                     status = :status, file_path = :file_path, cover_image = :cover_image
+                     stock = :stock, status = :status, file_path = :file_path, cover_image = :cover_image
                  WHERE id = :id",
-                compact('title', 'author', 'subject', 'category', 'type', 'description', 'status', 'file_path', 'cover_image', 'id')
+                compact('title', 'author', 'subject', 'category', 'type', 'description', 'stock', 'status', 'file_path', 'cover_image', 'id')
             );
             return ['success' => true, 'message' => 'Resource updated successfully.'];
         } catch (\PDOException $e) {
@@ -228,6 +236,17 @@ class Resources
         return $this->db->execute(
             "UPDATE resources SET status = :status WHERE id = :id",
             ['status' => $status, 'id' => $id]
+        ) > 0;
+    }
+
+    /**
+     * Update resource stock and status (for borrowing/returning).
+     */
+    public function updateStockAndStatus(int $id, int $stock, string $status): bool
+    {
+        return $this->db->execute(
+            "UPDATE resources SET stock = :stock, status = :status WHERE id = :id",
+            ['stock' => $stock, 'status' => $status, 'id' => $id]
         ) > 0;
     }
 }

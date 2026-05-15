@@ -56,7 +56,7 @@
         <div class="section-title mb-3">Browse by Category</div>
         <div class="mb-5 overflow-auto d-flex pb-2">
             <?php foreach(array_slice($categories, 0, 8) as $cat): ?>
-            <a href="/library_system/index.php?action=student_search&category=<?= $cat['id'] ?>" class="category-pill">
+            <a href="/library_system/index.php?action=student_search&category=<?= urlencode($cat['category_name']) ?>" class="category-pill">
                 <i class="bi bi-tag-fill"></i>
                 <?= htmlspecialchars($cat['category_name']) ?>
             </a>
@@ -89,14 +89,14 @@
                 <div class="resource-card-student">
                     <div class="resource-thumb">
                         <?php if (!empty($r['cover_image'])): ?>
-                            <img src="<?= htmlspecialchars($r['cover_image']) ?>" alt="Cover" class="w-100 h-100 object-fit-cover rounded-3">
+                            <img src="/library_system/<?= htmlspecialchars($r['cover_image']) ?>" alt="Cover" class="w-100 h-100 object-fit-cover rounded-3">
                         <?php else: ?>
                             <i class="bi bi-journal-text"></i>
                         <?php endif; ?>
                         <span class="type-badge"><?= htmlspecialchars($r['type'] ?? 'Material') ?></span>
                     </div>
                     <div class="resource-body">
-                        <div class="resource-category"><?= htmlspecialchars($r['category_name'] ?? 'General') ?></div>
+                        <div class="resource-category"><?= htmlspecialchars($r['category'] ?? 'General') ?></div>
                         <div class="resource-title"><?= htmlspecialchars($r['title']) ?></div>
                         <div class="resource-author">by <?= htmlspecialchars($r['author']) ?></div>
                     </div>
@@ -178,7 +178,7 @@
     function viewDetails(resource) {
         document.getElementById('modalTitle').textContent = resource.title;
         document.getElementById('modalAuthor').textContent = 'by ' + resource.author;
-        document.getElementById('modalCategory').textContent = resource.category_name || resource.category || 'General';
+        document.getElementById('modalCategory').textContent = resource.category || 'General';
         document.getElementById('modalDescription').textContent = resource.description || 'No description provided for this material.';
         
         const statusBadge = document.getElementById('modalStatusBadge');

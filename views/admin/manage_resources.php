@@ -88,13 +88,14 @@
                         <option value="unavailable" <?= ($status ?? '') === 'unavailable' ? 'selected' : '' ?>>Unavailable</option>
                     </select>
                 </div>
+
                 <div class="col-6 col-md-2">
                     <select name="category" class="form-select">
                         <option value="">All Categories</option>
                         <?php foreach ($categories ?? [] as $cat): ?>
-                        <option value="<?= htmlspecialchars($cat['category'] ?? '', ENT_QUOTES, 'UTF-8') ?>"
-                            <?= ($category ?? '') === ($cat['category'] ?? '') ? 'selected' : '' ?>>
-                            <?= htmlspecialchars($cat['category'] ?? '', ENT_QUOTES, 'UTF-8') ?>
+                        <option value="<?= htmlspecialchars($cat['category_name'] ?? '', ENT_QUOTES, 'UTF-8') ?>"
+                            <?= ($category ?? '') === ($cat['category_name'] ?? '') ? 'selected' : '' ?>>
+                            <?= htmlspecialchars($cat['category_name'] ?? '', ENT_QUOTES, 'UTF-8') ?>
                         </option>
                         <?php endforeach; ?>
                     </select>
@@ -113,10 +114,12 @@
                     <thead>
                         <tr>
                             <th>#</th>
+                            <th>Cover</th>
                             <th>Title</th>
                             <th>Author</th>
                             <th>Subject / Category</th>
                             <th>Type</th>
+                            <th>Stock</th>
                             <th>Status</th>
                             <th>Date Added</th>
                             <th style="text-align:center;">Actions</th>
@@ -136,6 +139,17 @@
                         <?php foreach ($resources as $i => $r): ?>
                         <tr>
                             <td style="color:var(--text-muted-oc); font-size:0.8rem;"><?= $i + 1 ?></td>
+                            <td>
+                                <?php if (!empty($r['cover_image'])): ?>
+                                    <img src="/library_system/<?= htmlspecialchars($r['cover_image'], ENT_QUOTES, 'UTF-8') ?>" 
+                                         alt="Cover" 
+                                         style="width:45px; height:65px; object-fit:cover; border-radius:6px; box-shadow:0 2px 8px rgba(0,0,0,0.1);">
+                                <?php else: ?>
+                                    <div style="width:45px; height:65px; background:#f1f5f9; border-radius:6px; display:flex; align-items:center; justify-content:center; color:#cbd5e1;">
+                                        <i class="bi bi-image" style="font-size:1.2rem;"></i>
+                                    </div>
+                                <?php endif; ?>
+                            </td>
                             <td>
                                 <div style="font-weight:600; color:#1a202c; font-size:0.87rem;"><?= htmlspecialchars($r['title'], ENT_QUOTES, 'UTF-8') ?></div>
                                 <?php if (!empty($r['description'])): ?>
@@ -159,6 +173,9 @@
                                 $icon = $typeIcons[$r['type']] ?? 'bi-file';
                                 ?>
                                 <span style="font-size:0.82rem;"><i class="bi <?= $icon ?> me-1"></i><?= ucfirst(htmlspecialchars($r['type'], ENT_QUOTES, 'UTF-8')) ?></span>
+                            </td>
+                            <td>
+                                <div style="font-weight:600; font-size:0.9rem; text-align:center;"><?= (int)$r['stock'] ?></div>
                             </td>
                             <td>
                                 <?php
@@ -208,6 +225,7 @@
         document.getElementById('sidebarOverlay').classList.toggle('show');
     }
 
+
     // Open Edit Modal & populate fields
     function openEditModal(resource) {
         document.getElementById('edit_id').value          = resource.id;
@@ -217,7 +235,19 @@
         document.getElementById('edit_category').value   = resource.category ?? '';
         document.getElementById('edit_description').value= resource.description ?? '';
         document.getElementById('edit_type').value        = resource.type;
+        document.getElementById('edit_stock').value       = resource.stock ?? 1;
         document.getElementById('edit_status').value      = resource.status;
+
+        // Show Cover Preview
+        const previewWrap = document.getElementById('edit_cover_preview_wrap');
+        const previewImg  = document.getElementById('edit_cover_preview_img');
+        if (resource.cover_image) {
+            previewWrap.classList.remove('d-none');
+            previewImg.src = '/library_system/' + resource.cover_image;
+        } else {
+            previewWrap.classList.add('d-none');
+        }
+
         new bootstrap.Modal(document.getElementById('editModal')).show();
     }
 
@@ -252,13 +282,15 @@
             
             const textContent = row.textContent.toLowerCase();
             
+
             // Extract values from cells for precise filtering
             const cells = row.querySelectorAll('td');
-            if (cells.length < 6) return; // Safeguard
+            if (cells.length < 7) return; // Safeguard updated to 7 columns
 
-            const rowType     = cells[4].textContent.trim().toLowerCase();
-            const rowStatus   = cells[5].textContent.trim().toLowerCase();
-            const rowCategory = cells[3].textContent.toLowerCase();
+            const rowCategory = cells[4].textContent.toLowerCase();
+            const rowType     = cells[5].textContent.trim().toLowerCase();
+            const rowStock    = cells[6].textContent.trim();
+            const rowStatus   = cells[7].textContent.trim().toLowerCase();
 
             const matchesSearch   = textContent.includes(searchTerm);
             const matchesType     = typeTerm === '' || rowType.includes(typeTerm);
