@@ -137,6 +137,7 @@
                                 <th class="border-0">Resource</th>
                                 <th class="border-0">Borrowed Date</th>
                                 <th class="border-0">Due Date</th>
+                                <th class="border-0">Note</th>
                                 <th class="border-0 text-center">Action</th>
                             </tr>
                         </thead>
@@ -160,8 +161,21 @@
                                         </span>
                                     </td>
 
+                                    <td>
+                                        <?php if (!empty($ab['notes'])): ?>
+                                            <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle rounded-pill px-2 py-1" style="font-size:0.72rem;" title="<?= htmlspecialchars($ab['notes']) ?>">
+                                                <i class="bi bi-sticky-fill me-1"></i><?= htmlspecialchars(mb_strimwidth($ab['notes'], 0, 30, '…')) ?>
+                                            </span>
+                                        <?php else: ?>
+                                            <span class="text-muted small">—</span>
+                                        <?php endif; ?>
+                                    </td>
                                     <td class="text-center">
                                         <div class="d-flex gap-2 justify-content-center">
+                                            <button type="button" class="btn btn-sm btn-outline-warning rounded-pill px-3 fw-600" title="Send Note to Student"
+                                                onclick="openNoteModal(<?= $ab['id'] ?>, '<?= htmlspecialchars(addslashes($ab['notes'] ?? ''), ENT_QUOTES) ?>')"> 
+                                                <i class="bi bi-sticky-fill me-1"></i>Note
+                                            </button>
                                             <a href="/library_system/index.php?action=admin_send_individual_reminder&id=<?= $ab['id'] ?>" class="btn btn-sm btn-outline-primary rounded-pill px-3 fw-600" title="Send Manual Reminder">
                                                 <i class="bi bi-envelope-paper"></i>
                                             </a>
@@ -208,6 +222,47 @@
     </div>
 </div>
 
+<!-- Send Note Modal -->
+<div class="modal fade" id="noteModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-4">
+            <div class="modal-header border-0 pb-0" style="background:linear-gradient(135deg,#fefce8,#fef9c3); border-radius:16px 16px 0 0;">
+                <div class="d-flex align-items-center gap-2">
+                    <div style="background:#facc15;width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;">
+                        <i class="bi bi-sticky-fill text-dark"></i>
+                    </div>
+                    <h5 class="modal-title fw-800 mb-0">Send Note to Student</h5>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form action="/library_system/index.php?action=admin_send_note" method="POST">
+                <input type="hidden" name="log_id" id="note_log_id" value="">
+                <div class="modal-body p-4 pt-3">
+                    <p class="text-muted small mb-3">
+                        <i class="bi bi-info-circle me-1"></i>
+                        This note will be sent as an in-app notification to the student.
+                    </p>
+                    <div class="mb-3">
+                        <label class="form-label fw-600">Note / Reminder</label>
+                        <textarea name="note" id="note_text" class="form-control" rows="4"
+                            placeholder="e.g. Please handle the book with care, some pages are fragile..."
+                            maxlength="500" required style="border-radius:10px; resize:none;"></textarea>
+                        <div class="d-flex justify-content-end mt-1">
+                            <small class="text-muted" id="noteCharCount">0 / 500</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 pt-0">
+                    <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-warning rounded-pill px-4 fw-600">
+                        <i class="bi bi-send-fill me-1"></i>Send Note
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     function toggleSidebar() {
@@ -215,14 +270,32 @@
         document.getElementById('sidebarOverlay').classList.toggle('show');
     }
 
-    let approveModal;
+    let approveModal, noteModal;
     document.addEventListener("DOMContentLoaded", function() {
         approveModal = new bootstrap.Modal(document.getElementById('approveModal'));
+        noteModal    = new bootstrap.Modal(document.getElementById('noteModal'));
+
+        // Character counter for note textarea
+        const noteText = document.getElementById('note_text');
+        const noteCount = document.getElementById('noteCharCount');
+        if (noteText) {
+            noteText.addEventListener('input', function () {
+                noteCount.textContent = this.value.length + ' / 500';
+            });
+        }
     });
 
     function openApproveModal(id) {
         document.getElementById('approve_log_id').value = id;
         approveModal.show();
+    }
+
+    function openNoteModal(logId, existingNote) {
+        document.getElementById('note_log_id').value = logId;
+        const noteText = document.getElementById('note_text');
+        noteText.value = existingNote || '';
+        document.getElementById('noteCharCount').textContent = noteText.value.length + ' / 500';
+        noteModal.show();
     }
 
     // ── Live Search: Pending Requests (cards) ──

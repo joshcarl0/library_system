@@ -86,4 +86,15 @@ class ResourceLog
     {
         return $this->db->fetchOne("SELECT * FROM resource_logs WHERE id = :id", ['id' => $id]);
     }
+
+    /**
+     * Save / update the admin note on a borrow log.
+     */
+    public function saveNote(int $logId, string $note): bool
+    {
+        return $this->db->execute(
+            "UPDATE resource_logs SET notes = :notes WHERE id = :id",
+            ['notes' => $note, 'id' => $logId]
+        ) >= 0;
+    }
 }

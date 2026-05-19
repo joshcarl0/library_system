@@ -4,6 +4,9 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+// Set timezone to Philippine Standard Time (UTC+8)
+date_default_timezone_set('Asia/Manila');
+
 // Include required files
 require_once __DIR__ . '/app/core/database.php';
 require_once __DIR__ . '/app/core/models/Users.php';
@@ -126,6 +129,10 @@ switch ($action) {
 
     case 'admin_send_individual_reminder':
         $adminController->sendIndividualReminder();
+        break;
+
+    case 'admin_send_note':
+        $adminController->sendNote();
         break;
 
     // ════════════════════════════════════════════════════════

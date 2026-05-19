@@ -47,6 +47,8 @@ class Database
 
         try {
             $this->pdo = new PDO($dsn, self::USERNAME, self::PASSWORD, $options);
+            // Sync MySQL session timezone to Philippine Standard Time (UTC+8)
+            $this->pdo->exec("SET time_zone = '+08:00'");
         } catch (PDOException $e) {
             // Log the real error privately; show a generic message to the user
             error_log('Database connection failed: ' . $e->getMessage());

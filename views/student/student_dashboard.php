@@ -107,7 +107,7 @@
                         </div>
                         <button type="button" 
                                 class="btn btn-sm btn-outline-primary rounded-pill px-3 fw-600"
-                                onclick='viewDetails(<?= json_encode($r) ?>)'>
+                                onclick='viewDetails(<?= htmlspecialchars(json_encode($r), ENT_QUOTES, 'UTF-8') ?>)'>
                             View
                         </button>
                     </div>

@@ -160,9 +160,23 @@ $search_type  = $_GET['type'] ?? '';
             </div>
             <div class="modal-body p-4 pt-0">
                 <div class="text-center mb-4">
-                    <div id="modalCoverContainer" class="mb-3 mx-auto shadow-sm rounded-3" style="width: 140px; height: 190px; background: #f8fafc; display: flex; align-items: center; justify-content: center; overflow: hidden;">
-                        <i class="bi bi-journal-text fs-1 text-muted" id="modalDefaultIcon"></i>
-                        <img src="" id="modalCoverImg" class="w-100 h-100 object-fit-cover d-none">
+                    <div class="book-container mb-4" id="bookContainer">
+                        <div class="book initial-angle" id="modalBook3D">
+                            <div class="book-face book-front">
+                                <div id="modalDefaultCover" class="default-cover">
+                                    <div class="cover-border">
+                                        <h6 id="modalCoverTitle" class="cover-title"></h6>
+                                        <span class="cover-author" id="modalCoverAuthor"></span>
+                                    </div>
+                                </div>
+                                <img src="" id="modalCoverImg3D" class="d-none">
+                            </div>
+                            <div class="book-face book-back"></div>
+                            <div class="book-face book-spine"></div>
+                            <div class="book-face book-pages-right"></div>
+                            <div class="book-face book-pages-top"></div>
+                            <div class="book-face book-pages-bottom"></div>
+                        </div>
                     </div>
                     <h5 class="fw-800 mb-1" id="modalTitle"></h5>
                     <p class="text-muted mb-2" id="modalAuthor"></p>
@@ -196,16 +210,28 @@ $search_type  = $_GET['type'] ?? '';
         document.getElementById('modalAuthor').textContent = 'by ' + resource.author;
         document.getElementById('modalDescription').textContent = resource.description || 'No description provided for this material.';
         
+        // Reset 3D book rotation
+        const book3D = document.getElementById('modalBook3D');
+        book3D.style.transform = ''; // remove inline styles to fallback to initial-angle
+        book3D.classList.add('initial-angle');
+        currentRotX = -15;
+        currentRotY = -30;
+
         // Handle Cover Image
-        const coverImg = document.getElementById('modalCoverImg');
-        const defaultIcon = document.getElementById('modalDefaultIcon');
+        const coverImg = document.getElementById('modalCoverImg3D');
+        const defaultCover = document.getElementById('modalDefaultCover');
+        const coverTitle = document.getElementById('modalCoverTitle');
+        const coverAuthor = document.getElementById('modalCoverAuthor');
+
         if (resource.cover_image) {
             coverImg.src = '/library_system/' + resource.cover_image;
             coverImg.classList.remove('d-none');
-            defaultIcon.classList.add('d-none');
+            defaultCover.classList.add('d-none');
         } else {
             coverImg.classList.add('d-none');
-            defaultIcon.classList.remove('d-none');
+            defaultCover.classList.remove('d-none');
+            coverTitle.textContent = resource.title;
+            coverAuthor.textContent = 'by ' + resource.author;
         }
 
         const statusBadge = document.getElementById('modalStatusBadge');
@@ -234,6 +260,59 @@ $search_type  = $_GET['type'] ?? '';
         
         resourceModal.show();
     }
+
+    // 3D Book Drag to Rotate Logic
+    const bookContainer = document.getElementById('bookContainer');
+    const book3DElem = document.getElementById('modalBook3D');
+    
+    let isDragging = false;
+    let startX, startY;
+    let currentRotX = -15;
+    let currentRotY = -30;
+
+    function handleDragStart(e) {
+        isDragging = true;
+        startX = e.type.includes('mouse') ? e.pageX : e.touches[0].pageX;
+        startY = e.type.includes('mouse') ? e.pageY : e.touches[0].pageY;
+        book3DElem.classList.remove('initial-angle');
+        book3DElem.style.transition = 'none'; // disable transition while dragging
+    }
+
+    function handleDragMove(e) {
+        if (!isDragging) return;
+        e.preventDefault(); // prevent scrolling while dragging book
+
+        const x = e.type.includes('mouse') ? e.pageX : e.touches[0].pageX;
+        const y = e.type.includes('mouse') ? e.pageY : e.touches[0].pageY;
+
+        const deltaX = x - startX;
+        const deltaY = y - startY;
+
+        currentRotY += deltaX * 0.5;
+        currentRotX -= deltaY * 0.5;
+
+        // Limit X rotation so it doesn't flip completely upside down in a weird way
+        currentRotX = Math.max(-90, Math.min(90, currentRotX));
+
+        book3DElem.style.transform = `rotateX(${currentRotX}deg) rotateY(${currentRotY}deg)`;
+
+        startX = x;
+        startY = y;
+    }
+
+    function handleDragEnd() {
+        if (!isDragging) return;
+        isDragging = false;
+        book3DElem.style.transition = 'transform 0.1s ease-out'; // re-enable transition
+    }
+
+    bookContainer.addEventListener('mousedown', handleDragStart);
+    document.addEventListener('mousemove', handleDragMove);
+    document.addEventListener('mouseup', handleDragEnd);
+
+    bookContainer.addEventListener('touchstart', handleDragStart, {passive: false});
+    document.addEventListener('touchmove', handleDragMove, {passive: false});
+    document.addEventListener('touchend', handleDragEnd);
 
     // No live search needed as we use server-side "Apply Filters" button for better accuracy
 </script>

@@ -420,6 +420,46 @@ class AdminController
         exit;
     }
 
+    public function sendNote(): void
+    {
+        Users::requireRole('admin', '/library_system/index.php?action=login');
+
+        $logId = (int) ($_POST['log_id'] ?? 0);
+        $note  = trim($_POST['note'] ?? '');
+
+        if ($logId <= 0 || $note === '') {
+            header('Location: /library_system/index.php?action=admin_manage_requests&error=Note cannot be empty');
+            exit;
+        }
+
+        $log = $this->resourceLogModel->findById($logId);
+
+        if (!$log) {
+            header('Location: /library_system/index.php?action=admin_manage_requests&error=Borrow record not found');
+            exit;
+        }
+
+        // 1. Save note to resource_logs
+        $this->resourceLogModel->saveNote($logId, $note);
+
+        // 2. Get resource title for the notification message
+        $db    = Database::getInstance();
+        $query = "SELECT r.title FROM resource_logs rl JOIN resources r ON rl.resource_id = r.id WHERE rl.id = :id";
+        $row   = $db->fetchOne($query, ['id' => $logId]);
+        $title = $row['title'] ?? 'your borrowed resource';
+
+        // 3. Send in-app notification to the student
+        $this->notificationModel->create(
+            $log['user_id'],
+            '📝 Note from the Library',
+            "Regarding \"" . $title . "\": " . $note,
+            'loan'
+        );
+
+        header('Location: /library_system/index.php?action=admin_manage_requests&success=Note sent to student');
+        exit;
+    }
+
     private function handleFileUpload(array $file, string $subDir): array
     {
         $targetDir = __DIR__ . '/../../../assets/uploads/' . $subDir . '/';

@@ -35,6 +35,7 @@ class FacultyController
 
         $stats = [
             'total_resources' => $this->resourceModel->countAll(),
+            'total_books'     => $this->resourceModel->countByType('book'),
             'available'       => $this->resourceModel->countByStatus('available'),
             'total_students'  => $this->userModel->countByRole('student'),
         ];

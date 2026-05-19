@@ -56,31 +56,43 @@
 
         <!-- ── Stat Cards ── -->
         <div class="row g-4 mb-4">
-            <div class="col-sm-6 col-xl-4">
+            <div class="col-sm-6 col-xl-3">
                 <div class="stat-card-faculty">
                     <div class="scf-icon bg-primary-subtle text-primary">
-                        <i class="bi bi-journal-bookmark-fill"></i>
+                        <i class="bi bi-collection-fill"></i>
                     </div>
                     <div class="scf-info">
                         <span class="scf-label">Total Resources</span>
                         <h3 class="scf-value"><?= $stats['total_resources'] ?? 0 ?></h3>
-                        <span class="scf-trend text-primary"><i class="bi bi-collection"></i> System-wide</span>
+                        <span class="scf-trend text-primary"><i class="bi bi-info-circle"></i> System-wide</span>
                     </div>
                 </div>
             </div>
-            <div class="col-sm-6 col-xl-4">
+            <div class="col-sm-6 col-xl-3">
+                <div class="stat-card-faculty">
+                    <div class="scf-icon bg-success-subtle text-success">
+                        <i class="bi bi-book-fill"></i>
+                    </div>
+                    <div class="scf-info">
+                        <span class="scf-label">Total Books</span>
+                        <h3 class="scf-value"><?= $stats['total_books'] ?? 0 ?></h3>
+                        <span class="scf-trend text-success"><i class="bi bi-check2-all"></i> Physical books</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-xl-3">
                 <div class="stat-card-faculty">
                     <div class="scf-icon bg-warning-subtle text-warning">
-                        <i class="bi bi-box-arrow-in-down"></i>
+                        <i class="bi bi-check-circle-fill"></i>
                     </div>
                     <div class="scf-info">
                         <span class="scf-label">Available</span>
                         <h3 class="scf-value"><?= $stats['available'] ?? 0 ?></h3>
-                        <span class="scf-trend text-warning"><i class="bi bi-check-circle"></i> Ready to borrow</span>
+                        <span class="scf-trend text-warning"><i class="bi bi-arrow-right-circle"></i> Ready to borrow</span>
                     </div>
                 </div>
             </div>
-            <div class="col-sm-6 col-xl-4">
+            <div class="col-sm-6 col-xl-3">
                 <div class="stat-card-faculty">
                     <div class="scf-icon bg-danger-subtle text-danger">
                         <i class="bi bi-people-fill"></i>
@@ -88,7 +100,7 @@
                     <div class="scf-info">
                         <span class="scf-label">Active Students</span>
                         <h3 class="scf-value"><?= $stats['total_students'] ?? 0 ?></h3>
-                        <span class="scf-trend text-danger"><i class="bi bi-person-check"></i> Registered</span>
+                        <span class="scf-trend text-danger"><i class="bi bi-person-check-fill"></i> Registered</span>
                     </div>
                 </div>
             </div>
@@ -142,6 +154,7 @@
                             <th>Author</th>
                             <th>Category</th>
                             <th>Type</th>
+                            <th>Stock</th>
                             <th>Status</th>
                             <th>Date Added</th>
                         </tr>
@@ -160,6 +173,7 @@
                                 <td><?= htmlspecialchars($r['author']) ?></td>
                                 <td><?= htmlspecialchars($r['category_name'] ?? $r['category'] ?? '—') ?></td>
                                 <td><span style="font-size:0.8rem; font-weight:600;"><?= htmlspecialchars($r['resource_type'] ?? $r['type'] ?? 'Book') ?></span></td>
+                                <td class="text-center"><span class="badge bg-light text-dark border fw-700" style="font-size:0.75rem;"><?= (int)$r['stock'] ?></span></td>
                                 <td>
                                     <?php
                                         $status = $r['status'] ?? 'available';
